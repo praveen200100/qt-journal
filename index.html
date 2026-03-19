@@ -96,6 +96,25 @@ body{
   color:#000;outline:none;width:110px;padding:2px 4px;
   caret-color:#000;
 }
+.acct-bal-input{
+  text-transform:none;width:80px;letter-spacing:0;
+}
+.acct-tab-name{
+  pointer-events:none;
+}
+.acct-tab.on .acct-tab-name{
+  pointer-events:auto;
+}
+.acct-tab-bal{
+  font-size:9px;letter-spacing:0;
+  background:rgba(0,0,0,0.15);
+  padding:2px 5px;border-radius:2px;
+  pointer-events:none;white-space:nowrap;
+}
+.acct-tab.on .acct-tab-bal{
+  pointer-events:auto;
+  background:rgba(0,0,0,0.2);
+}
 
 /* account rename modal */
 .ar-modal-bg{
@@ -1031,6 +1050,17 @@ const ACCT_DEFAULT_NAMES = {
   india:   ['INDIA ACC 1','INDIA ACC 2'],
 };
 
+// Per-account balance (starting capital)
+function getBaseAmt(market, idx) {
+  market = market || mkt;
+  idx = (idx !== undefined) ? idx : getAcctIdx(market);
+  const stored = localStorage.getItem('qt_acct_bal_' + market + '_' + idx);
+  return stored !== null ? parseFloat(stored) : CFG[market].baseAmt;
+}
+function setBaseAmt(market, idx, val) {
+  localStorage.setItem('qt_acct_bal_' + market + '_' + idx, val);
+}
+
 // Load account names from localStorage
 function getAcctNames(market) {
   const stored = localStorage.getItem('qt_acct_names_' + market);
@@ -1059,13 +1089,16 @@ function renderAcctBar() {
   const bar = document.getElementById('acctBar');
   const names = getAcctNames(mkt);
   const activeIdx = getAcctIdx(mkt);
+  const c = getCFG();
   bar.innerHTML = names.map((name, i) => {
     const isOn = i === activeIdx;
+    const bal = getBaseAmt(mkt, i);
+    const balFmt = bal >= 1000 ? c.cur + (bal >= 100000 ? (bal/1000).toFixed(0)+'k' : bal >= 10000 ? (bal/1000).toFixed(1)+'k' : bal.toLocaleString()) : c.cur + bal;
     return `<button class="acct-tab${isOn ? ' on' : ''}"
       onclick="handleAcctClick(${i})"
-      id="acct-tab-${i}"
-      title="${isOn ? 'Click to rename' : name}">
-      <span class="acct-tab-label" id="acct-label-${i}">${name}</span>
+      id="acct-tab-${i}">
+      <span class="acct-tab-name" id="acct-label-${i}" onclick="${isOn ? 'startInlineEdit(event,'+i+')' : ''}" style="${isOn ? 'cursor:text' : ''}">${name}</span>
+      <span class="acct-tab-bal" id="acct-bal-${i}" onclick="${isOn ? 'startBalEdit(event,'+i+')' : ''}" style="${isOn ? 'cursor:text;opacity:.8' : 'opacity:.5'}">${balFmt}</span>
     </button>`;
   }).join('');
 }
@@ -1129,6 +1162,42 @@ function acctInlineKey(e, idx) {
   if (e.key === 'Escape') renderAcctBar();
 }
 function acctInlineBlur(idx) { setTimeout(() => acctInlineCommit(idx), 120); }
+
+function startBalEdit(e, idx) {
+  e.stopPropagation();
+  if (idx !== getAcctIdx(mkt)) return;
+  const balSpan = document.getElementById('acct-bal-' + idx);
+  if (!balSpan || balSpan.querySelector('input')) return;
+  const cur = getBaseAmt(mkt, idx);
+  const c = getCFG();
+  balSpan.innerHTML = `<input class="acct-inline-input acct-bal-input" id="acct-bal-inp-${idx}"
+    type="number" value="${cur}" min="0" step="100"
+    style="width:90px;color:#000;"
+    onclick="event.stopPropagation()"
+    onkeydown="acctBalKey(event,${idx})"
+    onblur="acctBalBlur(${idx})">`;
+  const inp = document.getElementById('acct-bal-inp-' + idx);
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function acctBalCommit(idx) {
+  const inp = document.getElementById('acct-bal-inp-' + idx);
+  if (!inp) return;
+  const val = parseFloat(inp.value);
+  if (!isNaN(val) && val >= 0) {
+    setBaseAmt(mkt, idx, val);
+    const c = getCFG();
+    toast('✓ BALANCE: ' + c.cur + val.toLocaleString(), 'g');
+    renderAll();
+  }
+  renderAcctBar();
+}
+function acctBalKey(e, idx) {
+  e.stopPropagation();
+  if (e.key === 'Enter') { e.preventDefault(); acctBalCommit(idx); }
+  if (e.key === 'Escape') renderAcctBar();
+}
+function acctBalBlur(idx) { setTimeout(() => acctBalCommit(idx), 120); }
 
 // Modal stubs (kept for compatibility)
 function openArModal(e, idx) { startInlineEdit(e, idx); }
@@ -1527,7 +1596,7 @@ function renderAll() {
 function renderOverview() {
   const s=calcStats();
   const c=getCFG();
-  const base=c.baseAmt;
+  const base=getBaseAmt();
   const dates=trades.map(t=>t.date).filter(Boolean).sort();
 
   const pnlEl=document.getElementById('h-pnl');
@@ -1617,8 +1686,8 @@ function drawChart() {
     svg.innerHTML=`<text x="500" y="110" text-anchor="middle" fill="#1e1e1e" font-family="Space Mono" font-size="13" letter-spacing="2">ADD TRADES TO SEE CHART</text>`;
     return;
   }
-  let cum=c.baseAmt;
-  const pts=[{x:0,bal:c.baseAmt,eq:c.baseAmt,date:''}];
+  let cum=getBaseAmt();
+  const pts=[{x:0,bal:getBaseAmt(),eq:getBaseAmt(),date:''}];
   ord.forEach((t,i)=>{ cum+=(t.profit||0); pts.push({x:i+1,bal:cum,eq:cum-(t.commission||0),date:t.date||''}); });
   const bals=pts.map(p=>p.bal),eqs=pts.map(p=>p.eq),all=[...bals,...eqs];
   const mn=Math.min(...all),mx=Math.max(...all),rng=mx-mn||100;
@@ -1643,7 +1712,7 @@ function drawChart() {
   const ep=pts.map((p,i)=>`${i===0?'M':'L'}${tx(p.x).toFixed(1)},${ty(p.eq).toFixed(1)}`).join(' ');
   const fill=bp+` L${tx(pts[pts.length-1].x).toFixed(1)},${H-pB} L${tx(0).toFixed(1)},${H-pB} Z`;
   const last=pts[pts.length-1].bal;
-  const lc=last>=c.baseAmt?'#f5c800':'#ff2244';
+  const lc=last>=getBaseAmt()?'#f5c800':'#ff2244';
   svg.innerHTML=`<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${lc}" stop-opacity=".15"/><stop offset="100%" stop-color="${lc}" stop-opacity="0"/></linearGradient></defs>${gl}${glab}${dl}<path d="${fill}" fill="url(#cg)"/><path d="${ep}" fill="none" stroke="#222" stroke-width="1.5" stroke-dasharray="4,3"/><path d="${bp}" fill="none" stroke="${lc}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${pts.map(p=>`<circle cx="${tx(p.x).toFixed(1)}" cy="${ty(p.bal).toFixed(1)}" r="2" fill="${lc}" opacity=".5"/>`).join('')}<circle cx="${tx(pts[pts.length-1].x).toFixed(1)}" cy="${ty(last).toFixed(1)}" r="5" fill="${lc}" stroke="#000" stroke-width="2"/><text x="${tx(pts[pts.length-1].x).toFixed(1)}" y="${(ty(last)-11).toFixed(1)}" text-anchor="middle" font-family="Space Mono" font-size="10" fill="${lc}" font-weight="bold">${c.cur}${last.toFixed(0)}</text>`;
 }
 
