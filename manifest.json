@@ -2,7 +2,7 @@
   "name": "QT Journal — War Room",
   "short_name": "QT Journal",
   "description": "Professional Forex, Futures & Indian Market Trading Journal",
-  "start_url": "/",
+  "start_url": "/qt-journal/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#f5c800",
