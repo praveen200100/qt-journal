@@ -305,10 +305,10 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 .dtc-share:hover{background:var(--y);color:#000;font-weight:700;}
 
 /* SHARE MODAL */
-.sbox{background:var(--s1);border:1px solid var(--b2);border-top:3px solid var(--y);padding:24px;width:min(540px,95vw);text-align:center;transform:scale(.96);transition:transform .2s;box-shadow:0 0 60px rgba(0,0,0,.9);}
+.sbox{background:var(--s1);border:1px solid var(--b2);border-top:3px solid var(--y);padding:24px;width:min(600px,96vw);text-align:center;transform:scale(.96);transition:transform .2s;box-shadow:0 0 60px rgba(0,0,0,.9);}
 .ov.on .sbox{transform:scale(1);}
 .share-title{font-family:var(--fm);font-size:10px;letter-spacing:3px;color:var(--t2);margin-bottom:14px;text-transform:uppercase;}
-#shareCanvas{width:100%;max-width:500px;display:block;margin:0 auto 16px;border:1px solid var(--b2);}
+#shareCanvas{width:100%;max-width:560px;display:block;margin:0 auto 16px;border:1px solid var(--b2);}
 .share-actions{display:flex;gap:8px;justify-content:center;}
 
 /* LIGHTBOX */
@@ -321,9 +321,194 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 /* STAT SUMMARY SECTION */
 .stat-hero-row{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;}
 
-/* RESPONSIVE */
-@media(max-width:1100px){.grid-52{grid-template-columns:1fr;}.grid-3{grid-template-columns:1fr 1fr;}.fg5{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:700px){.grid-2,.grid-4{grid-template-columns:1fr 1fr;}.grid-3{grid-template-columns:1fr;}.fg5,.fg4{grid-template-columns:1fr 1fr;}.hero-num{font-size:56px;}.nav-tabs{display:none;}.mkt-btn{padding:7px 11px;font-size:10px;}}
+/* ══ RESPONSIVE — TABLET ══ */
+@media(max-width:1100px){
+  .grid-52{grid-template-columns:1fr;}
+  .grid-3{grid-template-columns:1fr 1fr;}
+  .fg5{grid-template-columns:repeat(3,1fr);}
+}
+
+/* ══ RESPONSIVE — MOBILE ══ */
+@media(max-width:768px){
+
+  /* TOPBAR */
+  .topbar{
+    height:auto;
+    padding:8px 12px;
+    flex-wrap:wrap;
+    gap:8px;
+    position:sticky;
+    top:0;
+    z-index:300;
+  }
+  .logo{gap:8px;}
+  .logo-brand{font-size:26px;letter-spacing:4px;}
+  .logo-sub{font-size:9px;}
+  .logo-div{display:none;}
+
+  /* MARKET SWITCHER */
+  .mkt-sw{width:100%;order:3;}
+  .mkt-btn{flex:1;padding:8px 6px;font-size:10px;letter-spacing:1px;text-align:center;}
+
+  /* TOPBAR RIGHT */
+  .topbar-right{
+    width:100%;
+    order:2;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:4px;
+  }
+  .tick{display:none;}
+  .tb-btn{font-size:9px;padding:6px 10px;letter-spacing:0;}
+  .tb-btn-y{font-size:10px;padding:7px 14px;}
+
+  /* NAV TABS */
+  .nav-tabs{
+    display:flex;
+    width:100%;
+    order:4;
+    overflow-x:auto;
+    gap:0;
+    border-top:1px solid var(--b1);
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .nav-tabs::-webkit-scrollbar{display:none;}
+  .ntab{
+    flex:1;
+    min-width:70px;
+    font-size:10px;
+    padding:10px 8px;
+    letter-spacing:1px;
+    text-align:center;
+    white-space:nowrap;
+  }
+
+  /* HERO */
+  .hero{padding:16px 14px 0;}
+  .hero-top{flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:12px;}
+  .hero-pnl{gap:14px;flex-wrap:wrap;}
+  .hero-num{font-size:48px !important;}
+  .hero-label{font-size:9px;letter-spacing:2px;}
+  .hero-meta{font-size:10px;}
+
+  /* HERO QUICK STATS */
+  .hero-quick{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:2px;
+  }
+  .hq{padding:10px 8px;min-width:0;}
+  .hq-label{font-size:8px;letter-spacing:1px;}
+  .hq-val{font-size:22px;}
+
+  /* CONTENT */
+  .content{padding:12px 14px;}
+
+  /* GRIDS */
+  .grid-2,.grid-3,.grid-4,.grid-52{
+    grid-template-columns:1fr !important;
+    gap:10px;
+  }
+
+  /* PANEL */
+  .panel-head{padding:10px 14px;flex-wrap:wrap;gap:8px;}
+  .panel-title{font-size:10px;}
+  .panel-body{padding:12px 14px;}
+
+  /* DATE RANGE */
+  .dr-row{flex-wrap:wrap;gap:5px;}
+  .dr-input{font-size:10px;padding:5px 8px;width:120px;}
+
+  /* CHART */
+  svg.linechart{height:160px;}
+  svg.radar{height:180px;}
+
+  /* SBLOCK */
+  .sblock{padding:12px 14px;}
+  .sblock-val{font-size:30px !important;}
+  .sblock-label{font-size:9px;}
+
+  /* MROW */
+  .mrow{padding:9px 0;}
+  .mrow-label{font-size:10px;}
+  .mrow-val{font-size:22px;}
+
+  /* STAT HERO */
+  .stat-hero-row{gap:14px;}
+  .stat-hero-row .hero-num{font-size:36px !important;}
+
+  /* GAUGE */
+  .grid-3.gauge-row{grid-template-columns:1fr !important;}
+  .gauge-card{padding:14px;}
+  svg.gauge{width:150px;height:85px;}
+
+  /* CALENDAR */
+  .cal-nav-row{padding:10px 12px;gap:8px;}
+  .cal-month{font-size:20px;}
+  .cal-grid{padding:6px;gap:1px;}
+  .cal-cell{min-height:52px;padding:4px;}
+  .day-num{font-size:13px;}
+  .day-trades{font-size:8px;}
+  .day-pnl{font-size:9px;}
+  .cal-dow{font-size:8px;padding:5px 0;}
+
+  /* WEEKLY SUMMARY */
+  .week-name{font-size:14px;}
+  .week-range{font-size:9px;}
+  .week-pnl{font-size:11px;}
+
+  /* TABLE — horizontal scroll */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:700px;}
+  thead th{font-size:9px;padding:10px 10px;}
+  tbody td{padding:10px 10px;font-size:12px;}
+  .sym-cell{font-size:12px;}
+
+  /* MODAL */
+  .mbox,.dbox{width:98vw;max-height:95vh;}
+  .mhead{padding:12px 14px;}
+  .mtitle{font-size:20px;letter-spacing:3px;}
+  .mbody{padding:14px;}
+  .fg5,.fg4{grid-template-columns:1fr 1fr !important;}
+  .fg2{grid-template-columns:1fr !important;}
+  .field input,.field select,.field textarea{font-size:12px;padding:8px 10px;}
+  .rr-box{font-size:22px;}
+
+  /* DAY MODAL */
+  .dtc{padding:12px;}
+  .dtc-sym{font-size:24px;}
+  .dtc-pnl{font-size:26px;}
+  .dtc-grid{grid-template-columns:repeat(3,1fr);}
+  .dtc-fv{font-size:11px;}
+
+  /* SCORE */
+  #scoreNum{font-size:56px !important;}
+
+  /* PROGRESS BAR */
+  .prog-val{font-size:16px;}
+  .prog-label{font-size:10px;}
+
+  /* SBOX */
+  .sbox{padding:16px 14px;width:96vw;}
+
+  /* CHART LEGEND */
+  .chart-legend{gap:10px;}
+  .leg{font-size:9px;}
+}
+
+/* ══ RESPONSIVE — SMALL PHONE ══ */
+@media(max-width:380px){
+  .hero-num{font-size:38px !important;}
+  .hq-val{font-size:18px;}
+  .hero-quick{grid-template-columns:repeat(2,1fr);}
+  .mkt-btn{font-size:9px;padding:7px 4px;}
+  .tb-btn{font-size:8px;padding:5px 8px;}
+  .fg5,.fg4{grid-template-columns:1fr 1fr !important;}
+  .dtc-grid{grid-template-columns:repeat(2,1fr);}
+}
+
 @keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .page.on .hero{animation:drop .25s ease both;}
 .page.on .content>*{animation:drop .3s ease both;}
@@ -415,7 +600,7 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 <div class="ov" id="shareOv" onclick="closeShareBg(event)">
   <div class="sbox">
     <div class="share-title">⚡ TRADE SHARE CARD</div>
-    <canvas id="shareCanvas" width="500" height="300"></canvas>
+    <canvas id="shareCanvas" width="1080" height="1080"></canvas>
     <div class="share-actions">
       <button class="btn btn-ghost" onclick="closeShareOv()">CANCEL</button>
       <button class="btn btn-y" onclick="downloadShare()">⬇ DOWNLOAD PNG</button>
@@ -1346,7 +1531,7 @@ function renderHistory() {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SHARE CARD
+//  SHARE CARD — Professional Redesign
 // ══════════════════════════════════════════════════════════════
 let shareTID=null;
 function openShareCard(id) {
@@ -1355,53 +1540,287 @@ function openShareCard(id) {
   const c=getCFG();
   const cv=document.getElementById('shareCanvas');
   const ctx=cv.getContext('2d');
-  const W=500,H=300; cv.width=W; cv.height=H;
-  const iw=t.outcome==='Win',il=t.outcome==='Loss';
-  const ac=iw?'#00ff88':il?'#ff2244':'#f5c800';
-  const pnl=t.profit||0,ps=pnl>=0?'+':'',pc=pnl>0?'#00ff88':pnl<0?'#ff2244':'#777';
-  ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
-  // Grid
-  ctx.strokeStyle='rgba(245,200,0,0.03)'; ctx.lineWidth=1;
-  for(let x=0;x<W;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-  for(let y=0;y<H;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-  ctx.fillStyle=ac; ctx.fillRect(0,0,4,H);
-  const tg=ctx.createLinearGradient(0,0,W,0);
-  tg.addColorStop(0,ac); tg.addColorStop(1,'transparent');
-  ctx.fillStyle=tg; ctx.fillRect(4,0,W-4,2);
-  ctx.fillStyle=tg; ctx.fillRect(4,H-2,W-4,2);
-  ctx.font='700 9px monospace'; ctx.fillStyle='rgba(245,200,0,0.25)'; ctx.textAlign='right';
-  ctx.fillText('QT JOURNAL — '+c.label,W-18,20);
-  ctx.font='700 11px monospace'; ctx.fillStyle=ac; ctx.textAlign='right';
-  ctx.fillText(t.outcome?t.outcome.toUpperCase():'',W-18,36);
-  ctx.font='900 50px monospace'; ctx.fillStyle='#fff'; ctx.textAlign='left';
-  ctx.fillText(t.symbol||'—',18,62);
-  ctx.font='700 13px monospace'; ctx.fillStyle=t.type===c.typeLong?'#00ff88':'#ff2244';
-  ctx.fillText(t.type?t.type.toUpperCase():'—',18,80);
-  ctx.strokeStyle='rgba(245,200,0,0.15)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(18,92); ctx.lineTo(W-18,92); ctx.stroke();
-  const fields=[
-    {l:'ENTRY',  v:String(t.openPrice||'—'),  col:'#fff'},
-    {l:'CLOSED', v:String(t.closedPrice||'—'),col:'#fff'},
-    {l:'SL',     v:String(t.sl||'—'),         col:'#ff2244'},
-    {l:'TP',     v:String(t.tp||'—'),          col:'#00ff88'},
-    {l:'R:R',    v:t.rr?'1:'+t.rr:'—',        col:t.rr>=2?'#00ff88':t.rr>=1?'#f5c800':'#ff2244'},
-    {l:c.lotUnit,v:String(t.lots||'—'),        col:'#777'},
-  ];
-  const cW=(W-36)/3;
-  fields.forEach((f,i)=>{
-    const col=i%3,row=Math.floor(i/3),x=18+col*cW,y=108+row*46;
-    ctx.font='7px monospace'; ctx.fillStyle='rgba(245,200,0,0.4)'; ctx.textAlign='left'; ctx.fillText(f.l,x,y);
-    ctx.font='700 14px monospace'; ctx.fillStyle=f.col; ctx.fillText(f.v,x,y+17);
-  });
-  ctx.strokeStyle='rgba(245,200,0,0.15)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(18,208); ctx.lineTo(W-18,208); ctx.stroke();
-  ctx.font='900 48px monospace'; ctx.fillStyle=pc; ctx.textAlign='center';
-  ctx.fillText(ps+c.cur+Math.abs(pnl).toFixed(2),W/2,255);
-  ctx.font='9px monospace'; ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.textAlign='left';
-  ctx.fillText((t.date||'')+(t.session?' · '+t.session:'')+(t.tf?' · '+t.tf:''),18,278);
-  if(t.emotion){ ctx.textAlign='right'; ctx.fillText('● '+t.emotion,W-18,278); }
-  document.getElementById('shareOv').classList.add('on');
+
+  // Square card — 1080x1080 like pro trading apps
+  const W=1080, H=1080;
+  cv.width=W; cv.height=H;
+
+  const isWin  = t.outcome==='Win';
+  const isLoss = t.outcome==='Loss';
+  const isBE   = t.outcome==='BE';
+  const ac  = isWin?'#00ff88':isLoss?'#ff2244':'#f5c800';
+  const ac2 = isWin?'#00cc66':isLoss?'#cc1133':'#c9a200';
+  const pnl = t.profit||0;
+  const ps  = pnl>=0?'+':'';
+  const pc  = pnl>0?'#00ff88':pnl<0?'#ff2244':'#888';
+
+  // ── BACKGROUND ──
+  // Deep dark gradient
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#050810');
+  bg.addColorStop(0.5,'#07101a');
+  bg.addColorStop(1,'#030608');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  // If trade has screenshot — use as dim background
+  if(t.img) {
+    const img = new Image();
+    img.onload = () => {
+      // Draw image as background with heavy dark overlay
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+      ctx.drawImage(img, 0, 0, W, H);
+      ctx.restore();
+      // Re-draw all overlays after image loads
+      drawShareOverlays(ctx, t, c, W, H, ac, ac2, pc, ps, pnl, isWin, isLoss, isBE);
+      document.getElementById('shareOv').classList.add('on');
+    };
+    img.onerror = () => {
+      drawShareOverlays(ctx, t, c, W, H, ac, ac2, pc, ps, pnl, isWin, isLoss, isBE);
+      document.getElementById('shareOv').classList.add('on');
+    };
+    img.src = t.img;
+  } else {
+    // Draw candle chart background art
+    drawCandlesBG(ctx, W, H, ac);
+    drawShareOverlays(ctx, t, c, W, H, ac, ac2, pc, ps, pnl, isWin, isLoss, isBE);
+    document.getElementById('shareOv').classList.add('on');
+  }
 }
+
+function drawCandlesBG(ctx, W, H, ac) {
+  // Draw decorative candles in background
+  ctx.globalAlpha = 0.07;
+  const candleW = 28, gap = 48;
+  const cols = Math.floor(W / gap);
+  for(let i=0; i<cols; i++) {
+    const x = i*gap + 20;
+    const bodyH = 40 + Math.random()*120;
+    const bodyY = 200 + Math.random()*500;
+    const isUp = Math.random()>0.4;
+    ctx.fillStyle = isUp ? '#00ff88' : '#ff2244';
+    ctx.fillRect(x, bodyY, candleW, bodyH);
+    // Wick
+    ctx.strokeStyle = isUp ? '#00ff88' : '#ff2244';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x+candleW/2, bodyY-30-Math.random()*40);
+    ctx.lineTo(x+candleW/2, bodyY+bodyH+30+Math.random()*40);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawShareOverlays(ctx, t, c, W, H, ac, ac2, pc, ps, pnl, isWin, isLoss, isBE) {
+  // ── DARK VIGNETTE OVERLAY ──
+  const vg = ctx.createRadialGradient(W/2,H/2,200,W/2,H/2,W*0.8);
+  vg.addColorStop(0,'rgba(0,0,0,0)');
+  vg.addColorStop(1,'rgba(0,0,0,0.75)');
+  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+
+  // ── ACCENT GLOW (top) ──
+  const glow = ctx.createLinearGradient(0,0,W,0);
+  glow.addColorStop(0,'transparent');
+  glow.addColorStop(0.3,ac+'55');
+  glow.addColorStop(0.7,ac+'55');
+  glow.addColorStop(1,'transparent');
+  ctx.fillStyle=glow; ctx.fillRect(0,0,W,6);
+
+  // ── BOTTOM ACCENT ──
+  const bglow = ctx.createLinearGradient(0,0,W,0);
+  bglow.addColorStop(0,'transparent');
+  bglow.addColorStop(0.5,ac+'33');
+  bglow.addColorStop(1,'transparent');
+  ctx.fillStyle=bglow; ctx.fillRect(0,H-6,W,6);
+
+  // ── LEFT BORDER ──
+  const lb = ctx.createLinearGradient(0,0,0,H);
+  lb.addColorStop(0,'transparent');
+  lb.addColorStop(0.3,ac);
+  lb.addColorStop(0.7,ac);
+  lb.addColorStop(1,'transparent');
+  ctx.fillStyle=lb; ctx.fillRect(0,0,6,H);
+
+  // ── TOP ROW: Logo + "Closed Trade" + Outcome ──
+  // QT Logo text (left)
+  ctx.font='700 36px "Bebas Neue", monospace';
+  ctx.fillStyle='#f5c800';
+  ctx.textAlign='left';
+  ctx.letterSpacing='4px';
+  ctx.fillText('QT', 52, 72);
+
+  ctx.font='500 22px monospace';
+  ctx.fillStyle='rgba(245,200,0,0.5)';
+  ctx.fillText('QUANTUM TRADING', 52, 100);
+
+  // Center tag "Closed Trade"
+  const tagTxt = t.outcome==='Win'?'✓ WINNING TRADE':t.outcome==='Loss'?'✗ LOSING TRADE':'= BREAKEVEN';
+  ctx.font='700 26px monospace';
+  ctx.fillStyle=ac;
+  ctx.textAlign='center';
+  // Tag pill background
+  const tagW=360, tagH=48, tagX=W/2-tagW/2, tagY=44;
+  ctx.fillStyle='rgba(0,0,0,0.5)';
+  ctx.strokeStyle=ac+'88';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.roundRect(tagX,tagY,tagW,tagH,24);
+  ctx.fill(); ctx.stroke();
+  ctx.font='700 24px monospace';
+  ctx.fillStyle=ac;
+  ctx.textAlign='center';
+  ctx.fillText(tagTxt, W/2, tagY+31);
+
+  // Right: Trader name
+  ctx.font='700 32px monospace';
+  ctx.fillStyle='rgba(255,255,255,0.8)';
+  ctx.textAlign='right';
+  ctx.fillText('PRAVEEN', W-52, 80);
+
+  // ── SYMBOL — BIG CENTER TOP ──
+  ctx.font='900 110px "Bebas Neue", monospace';
+  ctx.fillStyle='#ffffff';
+  ctx.textAlign='center';
+  ctx.fillText(t.symbol||'—', W/2, 280);
+
+  // ── TYPE + LOTS + MARKET pills ──
+  const pills = [
+    {txt: t.type||'—', bg: t.type===c.typeLong?'#00cc66':'#cc1133'},
+    {txt: (t.lots||'0')+' '+(c.lotUnit||'LOTS').toLowerCase(), bg:'rgba(255,255,255,0.12)'},
+    {txt: c.label.replace(' JOURNAL','').replace('INDIAN ',''), bg:'rgba(255,255,255,0.12)'},
+  ];
+  let pillX = W/2 - 240;
+  const pillY = 310, pillH = 54;
+  pills.forEach(p => {
+    ctx.font='700 24px monospace';
+    const tw = ctx.measureText(p.txt).width;
+    const pw = tw + 40;
+    ctx.fillStyle=p.bg;
+    ctx.strokeStyle='rgba(255,255,255,0.1)';
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.roundRect(pillX,pillY,pw,pillH,27);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#fff';
+    ctx.textAlign='center';
+    ctx.fillText(p.txt, pillX+pw/2, pillY+34);
+    pillX += pw+16;
+  });
+
+  // ── PROFIT/LOSS BIG NUMBER ──
+  ctx.font='700 26px monospace';
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.textAlign='center';
+  ctx.fillText('PROFIT', W/2, 430);
+
+  // Big P&L
+  ctx.font='900 140px "Bebas Neue", monospace';
+  ctx.fillStyle=pc;
+  ctx.textAlign='center';
+  // Glow effect
+  ctx.shadowColor=pc;
+  ctx.shadowBlur=40;
+  ctx.fillText(ps+c.cur+Math.abs(pnl).toFixed(2), W/2, 575);
+  ctx.shadowBlur=0;
+
+  // ── SEPARATOR LINE ──
+  ctx.strokeStyle='rgba(255,255,255,0.08)';
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(52,620); ctx.lineTo(W-52,620);
+  ctx.stroke();
+
+  // ── OPEN / CLOSE PRICE SECTION ──
+  // Left: Open
+  ctx.textAlign='left';
+  ctx.font='500 22px monospace';
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fillText('Open price:', 52, 680);
+  ctx.font='700 44px "Bebas Neue", monospace';
+  ctx.fillStyle='#ffffff';
+  ctx.fillText(t.openPrice||'—', 52, 730);
+  if(t.openDT){
+    ctx.font='400 20px monospace';
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.fillText(t.openDT.replace('T',' '), 52, 758);
+  }
+
+  // Arrow center
+  ctx.strokeStyle='rgba(255,255,255,0.3)';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(W/2-40,720); ctx.lineTo(W/2+40,720);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(W/2+20,710); ctx.lineTo(W/2+40,720); ctx.lineTo(W/2+20,730);
+  ctx.stroke();
+
+  // Right: Close
+  ctx.textAlign='right';
+  ctx.font='500 22px monospace';
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fillText('Close price:', W-52, 680);
+  ctx.font='700 44px "Bebas Neue", monospace';
+  ctx.fillStyle='#ffffff';
+  ctx.fillText(t.closedPrice||'—', W-52, 730);
+  if(t.closeDT){
+    ctx.font='400 20px monospace';
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.fillText(t.closeDT.replace('T',' '), W-52, 758);
+  }
+
+  // ── EXTRA DETAILS ROW: SL, TP, R:R ──
+  ctx.strokeStyle='rgba(255,255,255,0.06)';
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(52,790); ctx.lineTo(W-52,790);
+  ctx.stroke();
+
+  const details=[
+    {l:'STOP LOSS', v:String(t.sl||'—'), c:'#ff6680'},
+    {l:'TAKE PROFIT',v:String(t.tp||'—'), c:'#00cc66'},
+    {l:'RISK:REWARD', v:t.rr?'1:'+t.rr:'—', c:t.rr>=2?'#00ff88':t.rr>=1?'#f5c800':'#ff4466'},
+    {l:'SESSION',    v:String(t.session||'—'), c:'rgba(255,255,255,0.7)'},
+  ];
+  const dW=(W-104)/4;
+  details.forEach((d,i)=>{
+    const dx=52+i*dW+dW/2;
+    ctx.textAlign='center';
+    ctx.font='400 18px monospace';
+    ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.fillText(d.l, dx, 828);
+    ctx.font='700 30px monospace';
+    ctx.fillStyle=d.c;
+    ctx.fillText(d.v, dx, 866);
+  });
+
+  // ── BOTTOM FOOTER ──
+  ctx.strokeStyle='rgba(255,255,255,0.06)';
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(52,910); ctx.lineTo(W-52,910);
+  ctx.stroke();
+
+  // Date + TF left
+  ctx.textAlign='left';
+  ctx.font='400 22px monospace';
+  ctx.fillStyle='rgba(255,255,255,0.25)';
+  const footLeft = [t.date||'', t.tf||'', t.emotion||''].filter(Boolean).join('  ·  ');
+  ctx.fillText(footLeft, 52, 960);
+
+  // QT Journal right
+  ctx.textAlign='right';
+  ctx.font='400 22px monospace';
+  ctx.fillStyle='rgba(245,200,0,0.4)';
+  ctx.fillText('QT JOURNAL — FIGHT FOR GLORY', W-52, 960);
+
+  // Watermark center bottom
+  ctx.textAlign='center';
+  ctx.font='400 18px monospace';
+  ctx.fillStyle='rgba(255,255,255,0.1)';
+  ctx.fillText('t.me/quantumtrading33', W/2, 1010);
+}
+
 function closeShareOv() { document.getElementById('shareOv').classList.remove('on'); shareTID=null; }
 function closeShareBg(e) { if(e.target===document.getElementById('shareOv')) closeShareOv(); }
 function downloadShare() {
