@@ -79,6 +79,46 @@ body{
 .ntab:hover{color:var(--t);}
 .ntab.on{color:var(--y);border-bottom-color:var(--y);}
 
+/* ── ACCOUNT TABS BAR ── */
+.acct-bar{
+  background:#000; border-bottom:1px solid var(--b2);
+  padding:0 24px; min-height:38px;
+  display:flex; align-items:center; gap:0;
+  position:sticky; top:60px; z-index:298;
+  overflow-x:auto; overflow-y:hidden;
+  scrollbar-width:none;
+}
+.acct-bar::-webkit-scrollbar{display:none;}
+.acct-bar-label{
+  font-family:var(--fm);font-size:9px;letter-spacing:2px;
+  color:var(--t3);text-transform:uppercase;margin-right:12px;
+  white-space:nowrap;flex-shrink:0;
+}
+.acct-tab{
+  font-family:var(--fm);font-size:10px;letter-spacing:1px;
+  padding:6px 16px;border:none;background:transparent;
+  color:var(--t2);cursor:pointer;transition:all .15s;
+  text-transform:uppercase;white-space:nowrap;flex-shrink:0;
+  border-bottom:2px solid transparent;
+  position:relative;
+}
+.acct-tab:hover{color:var(--t);background:var(--s2);}
+.acct-tab.on{color:var(--y);border-bottom-color:var(--y);background:var(--yg);}
+.acct-tab .acct-name{pointer-events:none;}
+.acct-tab .acct-rename-inp{
+  font-family:var(--fm);font-size:10px;letter-spacing:1px;
+  background:transparent;border:none;border-bottom:1px solid var(--y);
+  color:var(--y);width:80px;outline:none;text-transform:uppercase;
+  padding:0;
+}
+.acct-rename-btn{
+  font-family:var(--fm);font-size:9px;letter-spacing:1px;
+  padding:4px 10px;border:1px solid var(--b3);background:transparent;
+  color:var(--t3);cursor:pointer;transition:all .15s;margin-left:8px;
+  text-transform:uppercase;white-space:nowrap;flex-shrink:0;
+}
+.acct-rename-btn:hover{border-color:var(--y);color:var(--y);}
+
 /* TOP-RIGHT */
 .topbar-right{display:flex;align-items:center;gap:6px;}
 .tick{font-family:var(--fm);font-size:11px;color:var(--t2);letter-spacing:1px;display:flex;align-items:center;gap:7px;}
@@ -238,6 +278,8 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 .share-btn:hover{background:var(--y);color:#000;font-weight:700;}
 .del-btn{background:rgba(255,34,68,0.08);border:1px solid rgba(255,34,68,.3);color:var(--r);font-size:11px;padding:4px 8px;cursor:pointer;transition:all .15s;}
 .del-btn:hover{background:var(--r);color:#fff;}
+.edit-btn{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,.3);color:#00d4ff;font-size:11px;padding:4px 8px;cursor:pointer;transition:all .15s;}
+.edit-btn:hover{background:#00d4ff;color:#000;}
 .tbl-empty{text-align:center;padding:56px;color:var(--t3);font-family:var(--fm);font-size:11px;letter-spacing:2px;}
 
 /* BADGE */
@@ -330,6 +372,11 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 
 /* ══ RESPONSIVE — MOBILE ══ */
 @media(max-width:768px){
+
+  /* ACCOUNT BAR */
+  .acct-bar{padding:0 12px;top:auto;position:relative;}
+  .acct-tab{font-size:9px;padding:5px 10px;letter-spacing:0;}
+  .acct-bar-label{font-size:8px;margin-right:8px;}
 
   /* TOPBAR */
   .topbar{
@@ -657,6 +704,11 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
   </div>
 </div>
 
+<!-- ══ ACCOUNT TABS BAR ══ -->
+<div class="acct-bar" id="acctBar">
+  <span class="acct-bar-label" id="acctBarLabel">ACCOUNTS</span>
+</div>
+
 <!-- ══ PAGE: OVERVIEW ══ -->
 <div class="page on" id="page-overview">
   <div class="hero">
@@ -860,12 +912,11 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 
 <script>
 // ══════════════════════════════════════════════════════════════
-//  MARKET CONFIGS — Each market has its own localStorage key,
-//  its own pair lists, labels, currency
+//  MARKET CONFIGS — Each market has its own config.
+//  Each account uses key: qt_{marketType}_{accountIndex}
 // ══════════════════════════════════════════════════════════════
 const CFG = {
   forex: {
-    key:       'qt_forex',
     label:     'FOREX JOURNAL',
     cur:       '$',
     baseAmt:   5000,
@@ -887,9 +938,10 @@ const CFG = {
       {g:'Metals & Crypto',i:['XAUUSD','XAGUSD','BTCUSD','ETHUSD','LTCUSD']},
       {g:'Indices',        i:['US30','NAS100','SPX500','GER40','UK100','JP225']},
     ],
+    accountCount: 5,
+    defaultNames: ['FX ACCOUNT 1','FX ACCOUNT 2','FX ACCOUNT 3','FX ACCOUNT 4','FX ACCOUNT 5'],
   },
   futures: {
-    key:       'qt_futures',
     label:     'FOREX FUTURES',
     cur:       '$',
     baseAmt:   10000,
@@ -913,9 +965,10 @@ const CFG = {
       {g:'Bond Futures',   i:['ZN (10Y Note)','ZB (30Y Bond)','ZF (5Y Note)','ZT (2Y Note)']},
       {g:'Crypto Futures', i:['BTC Futures (CME)','ETH Futures (CME)','MBT (Micro BTC)','MET (Micro ETH)']},
     ],
+    accountCount: 5,
+    defaultNames: ['FU ACCOUNT 1','FU ACCOUNT 2','FU ACCOUNT 3','FU ACCOUNT 4','FU ACCOUNT 5'],
   },
   india: {
-    key:       'qt_india',
     label:     'INDIAN MARKET',
     cur:       '₹',
     baseAmt:   100000,
@@ -937,13 +990,40 @@ const CFG = {
       {g:'Commodities (MCX)',  i:['GOLD','GOLDM','SILVER','SILVERM','CRUDEOIL','NATURALGAS','COPPER','ALUMINIUM','ZINC','LEAD','NICKEL']},
       {g:'Currency (NSE/BSE)', i:['USDINR','EURINR','GBPINR','JPYINR','AUDINR','CADINR']},
     ],
+    accountCount: 2,
+    defaultNames: ['INDIA ACCOUNT 1','INDIA ACCOUNT 2'],
   },
 };
+
+// ══════════════════════════════════════════════════════════════
+//  ACCOUNT NAMES — stored in localStorage per market
+// ══════════════════════════════════════════════════════════════
+function getAcctNamesKey(marketType) { return 'qt_acct_names_' + marketType; }
+function getAcctNames(marketType) {
+  const stored = localStorage.getItem(getAcctNamesKey(marketType));
+  if (stored) return JSON.parse(stored);
+  return [...CFG[marketType].defaultNames];
+}
+function saveAcctNames(marketType, names) {
+  localStorage.setItem(getAcctNamesKey(marketType), JSON.stringify(names));
+}
+function getAcctKey(marketType, acctIdx) {
+  return 'qt_' + marketType + '_acct' + acctIdx;
+}
 
 // ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
 let mkt = localStorage.getItem('qt_active_market') || 'forex';
+// activeAcct: per market, which account index (0-based) is selected
+function getActiveAcctKey(marketType) { return 'qt_active_acct_' + marketType; }
+function getActiveAcct(marketType) {
+  return parseInt(localStorage.getItem(getActiveAcctKey(marketType)) || '0', 10);
+}
+function setActiveAcct(marketType, idx) {
+  localStorage.setItem(getActiveAcctKey(marketType), idx.toString());
+}
+
 let trades   = [];
 let curImg   = null;
 let calYear  = new Date().getFullYear();
@@ -952,9 +1032,78 @@ let dateFrom = null;
 let dateTo   = null;
 
 function getCFG() { return CFG[mkt]; }
-function getKey() { return getCFG().key; }
+function getKey() {
+  // Returns the storage key for current market + current account
+  const acctIdx = getActiveAcct(mkt);
+  return getAcctKey(mkt, acctIdx);
+}
 function loadTrades() { trades = JSON.parse(localStorage.getItem(getKey()) || '[]'); }
 function saveTrades() { localStorage.setItem(getKey(), JSON.stringify(trades)); }
+
+// ══════════════════════════════════════════════════════════════
+//  ACCOUNT TABS RENDER
+// ══════════════════════════════════════════════════════════════
+function renderAcctBar() {
+  const bar = document.getElementById('acctBar');
+  const c = CFG[mkt];
+  const names = getAcctNames(mkt);
+  const activeIdx = getActiveAcct(mkt);
+
+  let html = `<span class="acct-bar-label" id="acctBarLabel">${c.label.replace(' JOURNAL','').replace('INDIAN ','IN')} ACCOUNTS</span>`;
+  for (let i = 0; i < c.accountCount; i++) {
+    const isOn = i === activeIdx ? 'on' : '';
+    html += `<button class="acct-tab ${isOn}" onclick="switchAcct(${i})" ondblclick="startRenameAcct(${i})" title="Double-click to rename">
+      <span class="acct-name" id="acctName_${i}">${names[i]}</span>
+    </button>`;
+  }
+  bar.innerHTML = html;
+}
+
+function switchAcct(idx) {
+  setActiveAcct(mkt, idx);
+  loadTrades();
+  renderAcctBar();
+  // Update logo label
+  const names = getAcctNames(mkt);
+  document.getElementById('logoLabel').textContent = names[idx];
+  dateFrom = null; dateTo = null;
+  const drFrom = document.getElementById('drFrom');
+  const drTo   = document.getElementById('drTo');
+  if (drFrom) drFrom.value = '';
+  if (drTo)   drTo.value   = '';
+  renderAll();
+  toast('▶ ' + names[idx] + ' — LOADED', 'y');
+}
+
+function startRenameAcct(idx) {
+  const nameEl = document.getElementById('acctName_' + idx);
+  if (!nameEl) return;
+  const tab = nameEl.closest('.acct-tab');
+  const names = getAcctNames(mkt);
+  tab.innerHTML = `<input class="acct-rename-inp" id="renameInp_${idx}" value="${names[idx]}"
+    onblur="finishRenameAcct(${idx})"
+    onkeydown="if(event.key==='Enter')finishRenameAcct(${idx});if(event.key==='Escape')renderAcctBar();"
+    onclick="event.stopPropagation()"
+  >`;
+  const inp = document.getElementById('renameInp_' + idx);
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function finishRenameAcct(idx) {
+  const inp = document.getElementById('renameInp_' + idx);
+  if (!inp) return;
+  const newName = inp.value.trim().toUpperCase() || CFG[mkt].defaultNames[idx];
+  const names = getAcctNames(mkt);
+  names[idx] = newName;
+  saveAcctNames(mkt, names);
+  renderAcctBar();
+  // Update logo if this is the active account
+  if (idx === getActiveAcct(mkt)) {
+    document.getElementById('logoLabel').textContent = newName;
+  }
+  toast('✎ RENAMED: ' + newName, 'y');
+}
+
 
 // ══════════════════════════════════════════════════════════════
 //  MARKET SWITCH
@@ -964,19 +1113,24 @@ function switchMarket(type, btn) {
   localStorage.setItem('qt_active_market', type);
   document.querySelectorAll('.mkt-btn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
+  renderAcctBar();
   loadTrades();
   applyMarketUI(type);
   dateFrom = null; dateTo = null;
   document.getElementById('drFrom').value = '';
   document.getElementById('drTo').value = '';
   renderAll();
-  toast('▶ ' + getCFG().label + ' — LOADED', 'y');
+  const names = getAcctNames(type);
+  const acctIdx = getActiveAcct(type);
+  toast('▶ ' + getCFG().label + ' / ' + names[acctIdx] + ' — LOADED', 'y');
 }
 
 function applyMarketUI(type) {
   const c = CFG[type];
   // Logo
-  document.getElementById('logoLabel').textContent = c.label;
+  const acctIdx = getActiveAcct(type);
+  const acctNames = getAcctNames(type);
+  document.getElementById('logoLabel').textContent = acctNames[acctIdx];
   // Modal title
   document.getElementById('modalTitle').textContent = 'ADD TRADE — ' + c.label;
   // Labels
@@ -1035,7 +1189,11 @@ function openModal() {
   document.getElementById('f_date').value = new Date().toISOString().slice(0,10);
   document.getElementById('addModal').classList.add('on');
 }
-function closeModal() { document.getElementById('addModal').classList.remove('on'); }
+function closeModal() {
+  document.getElementById('addModal').classList.remove('on');
+  editingTradeId = null;
+  document.getElementById('modalTitle').textContent = 'ADD TRADE — ' + getCFG().label;
+}
 function closeMOBg(e) { if(e.target===document.getElementById('addModal')) closeModal(); }
 
 // ══════════════════════════════════════════════════════════════
@@ -1105,12 +1263,11 @@ function saveTrade() {
   if(o&&t) rew =type===c.typeLong?t-o:o-t;
   if(risk>0&&rew>0) rr=+(rew/risk).toFixed(2);
 
-  trades.unshift({
-    id:Date.now(), market:mkt,
-    date:document.getElementById('f_date').value||new Date().toISOString().slice(0,10),
-    session:document.getElementById('f_ses').value,
-    symbol:document.getElementById('f_pair').value,
-    type, tf:document.getElementById('f_tf').value,
+  const tradeData = {
+    date:     document.getElementById('f_date').value||new Date().toISOString().slice(0,10),
+    session:  document.getElementById('f_ses').value,
+    symbol:   document.getElementById('f_pair').value,
+    type, tf: document.getElementById('f_tf').value,
     openPrice:o, sl:s, tp:t,
     closedPrice:+document.getElementById('f_close').value||null,
     rr,
@@ -1124,8 +1281,26 @@ function saveTrade() {
     notes:document.getElementById('f_notes').value,
     mistakes:document.getElementById('f_mistakes').value,
     img:curImg,
-  });
-  saveTrades(); closeModal(); clearForm(); renderAll();
+  };
+
+  if(editingTradeId) {
+    // EDIT MODE — update existing trade
+    const idx = trades.findIndex(x=>x.id===editingTradeId);
+    if(idx !== -1) {
+      trades[idx] = { ...trades[idx], ...tradeData };
+      toast('✅ Trade updated!', 'g');
+    }
+    editingTradeId = null;
+  } else {
+    // NEW MODE — add trade
+    trades.unshift({ id:Date.now(), market:mkt, ...tradeData });
+    toast('✅ Trade saved!', 'g');
+  }
+
+  saveTrades();
+  closeModal();
+  clearForm();
+  renderAll();
 }
 
 function clearForm() {
@@ -1144,6 +1319,72 @@ function deleteTrade(id) {
   saveTrades();
   renderAll();
   toast('🗑 Trade deleted','r');
+}
+
+// Track edit mode
+let editingTradeId = null;
+
+function editTrade(id) {
+  const t = trades.find(x=>x.id===id);
+  if(!t) return;
+  const c = getCFG();
+
+  editingTradeId = id;
+
+  // Update modal title to EDIT mode
+  document.getElementById('modalTitle').textContent = 'EDIT TRADE';
+
+  // Fill all form fields with existing trade data
+  document.getElementById('f_date').value   = t.date || '';
+  document.getElementById('f_tf').value     = t.tf   || '15m';
+  document.getElementById('f_open').value   = t.openPrice   || '';
+  document.getElementById('f_sl').value     = t.sl          || '';
+  document.getElementById('f_tp').value     = t.tp          || '';
+  document.getElementById('f_close').value  = t.closedPrice || '';
+  document.getElementById('f_lots').value   = t.lots        || '';
+  document.getElementById('f_comm').value   = t.commission  || '';
+  document.getElementById('f_profit').value = t.profit      || '';
+  document.getElementById('f_notes').value    = t.notes    || '';
+  document.getElementById('f_mistakes').value = t.mistakes || '';
+  document.getElementById('f_odt').value = t.openDT  || '';
+  document.getElementById('f_cdt').value = t.closeDT || '';
+
+  // Set dropdowns
+  const ses = document.getElementById('f_ses');
+  for(let i=0;i<ses.options.length;i++){
+    if(ses.options[i].value===t.session){ses.selectedIndex=i;break;}
+  }
+  const pair = document.getElementById('f_pair');
+  for(let i=0;i<pair.options.length;i++){
+    if(pair.options[i].value===t.symbol){pair.selectedIndex=i;break;}
+  }
+  const type = document.getElementById('f_type');
+  for(let i=0;i<type.options.length;i++){
+    if(type.options[i].value===t.type){type.selectedIndex=i;break;}
+  }
+  const out = document.getElementById('f_out');
+  for(let i=0;i<out.options.length;i++){
+    if(out.options[i].value===t.outcome){out.selectedIndex=i;break;}
+  }
+  const emo = document.getElementById('f_emo');
+  for(let i=0;i<emo.options.length;i++){
+    if(emo.options[i].value===t.emotion){emo.selectedIndex=i;break;}
+  }
+
+  // Handle existing image
+  if(t.img) {
+    curImg = t.img;
+    const prev = document.getElementById('imgPrev');
+    const zone = document.getElementById('imgZone');
+    prev.src = t.img; prev.style.display='block';
+    document.getElementById('imgRm').style.display='block';
+    zone.querySelector('.img-icon').style.display='none';
+    zone.querySelector('.img-txt').style.display='none';
+    zone.classList.add('has');
+  }
+
+  calcRR();
+  document.getElementById('addModal').classList.add('on');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1526,7 +1767,7 @@ function renderHistory() {
     const tc=t.type===c.typeLong?'type-buy':'type-sell';
     const od=t.openDT?t.openDT.replace('T',' '):(t.date||'—');
     const cd=t.closeDT?t.closeDT.replace('T',' '):'—';
-    return `<tr><td style="display:flex;gap:4px"><button class="share-btn" onclick="openShareCard(${t.id})">↗ SHARE</button><button class="del-btn" onclick="deleteTrade(${t.id})">🗑</button></td><td class="sym-cell">${t.symbol||'—'}</td><td class="${tc}">${t.type}</td><td style="color:var(--t2);font-size:13px">${od}</td><td>${t.openPrice||'—'}</td><td style="color:var(--t2);font-size:13px">${cd}</td><td>${t.closedPrice||'—'}</td><td style="color:var(--g)">${t.tp||'—'}</td><td style="color:var(--r)">${t.sl||'—'}</td><td style="color:var(--t2)">${t.lots||'—'}</td><td style="color:var(--t2)">${c.cur}${(t.commission||0).toFixed(2)}</td><td class="${pc}" style="font-weight:700">${t.profit?ps+c.cur+Math.abs(t.profit).toFixed(2):c.cur+'0.00'}</td></tr>`;
+    return `<tr><td style="display:flex;gap:4px"><button class="share-btn" onclick="openShareCard(${t.id})">↗</button><button class="edit-btn" onclick="editTrade(${t.id})">✏️</button><button class="del-btn" onclick="deleteTrade(${t.id})">🗑</button></td><td class="sym-cell">${t.symbol||'—'}</td><td class="${tc}">${t.type}</td><td style="color:var(--t2);font-size:13px">${od}</td><td>${t.openPrice||'—'}</td><td style="color:var(--t2);font-size:13px">${cd}</td><td>${t.closedPrice||'—'}</td><td style="color:var(--g)">${t.tp||'—'}</td><td style="color:var(--r)">${t.sl||'—'}</td><td style="color:var(--t2)">${t.lots||'—'}</td><td style="color:var(--t2)">${c.cur}${(t.commission||0).toFixed(2)}</td><td class="${pc}" style="font-weight:700">${t.profit?ps+c.cur+Math.abs(t.profit).toFixed(2):c.cur+'0.00'}</td></tr>`;
   }).join('');
 }
 
@@ -1838,12 +2079,15 @@ function downloadShare() {
 function exportBackup() {
   if(!trades.length){toast('No trades to backup!','y');return;}
   const c=getCFG();
-  const data={version:3,market:mkt,marketLabel:c.label,exportedAt:new Date().toISOString(),tradeCount:trades.length,trades};
+  const acctIdx=getActiveAcct(mkt);
+  const names=getAcctNames(mkt);
+  const acctName=names[acctIdx];
+  const data={version:4,market:mkt,acctIdx,acctName,marketLabel:c.label,exportedAt:new Date().toISOString(),tradeCount:trades.length,trades};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-  a.download=`QT_${mkt.toUpperCase()}_Backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.download=`QT_${mkt.toUpperCase()}_${acctName.replace(/ /g,'_')}_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
-  toast(`✓ ${trades.length} trades backed up — ${c.label}`,'g');
+  toast(`✓ ${trades.length} trades backed up — ${acctName}`,'g');
 }
 function importBackup() { document.getElementById('importFile').click(); }
 function loadBackup(input) {
@@ -1854,16 +2098,30 @@ function loadBackup(input) {
       const d=JSON.parse(e.target.result);
       const imp=Array.isArray(d)?d:d.trades||[];
       if(!imp.length){toast('No trades in file','y');return;}
-      // If backup has a market tag, switch to that market
+      // Switch market if needed
       if(d.market && CFG[d.market]) {
         if(d.market !== mkt) {
           const btn=document.querySelector(`.mkt-btn[onclick*="'${d.market}'"]`);
           if(btn) { document.querySelectorAll('.mkt-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
           mkt=d.market; localStorage.setItem('qt_active_market',mkt);
-          loadTrades(); applyMarketUI(mkt);
+          applyMarketUI(mkt);
         }
+        // Switch account if backup has acctIdx
+        if(typeof d.acctIdx === 'number' && d.acctIdx < CFG[mkt].accountCount) {
+          setActiveAcct(mkt, d.acctIdx);
+          // Restore account name if present
+          if(d.acctName) {
+            const names=getAcctNames(mkt);
+            names[d.acctIdx]=d.acctName;
+            saveAcctNames(mkt, names);
+          }
+        }
+        loadTrades();
+        renderAcctBar();
       }
-      const ok=confirm(`Found ${imp.length} trades (${d.marketLabel||'Unknown market'}).\n\nOK = MERGE with current ${trades.length} trades\nCANCEL = REPLACE all current trades`);
+      const acctIdx=getActiveAcct(mkt);
+      const names=getAcctNames(mkt);
+      const ok=confirm(`Found ${imp.length} trades (${d.acctName||d.marketLabel||'Unknown'}).\n\nOK = MERGE with current ${trades.length} trades\nCANCEL = REPLACE all current trades`);
       if(ok){
         const ids=new Set(trades.map(t=>t.id));
         const add=imp.filter(t=>!ids.has(t.id));
@@ -1904,10 +2162,10 @@ function toast(msg,type) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SEED DEMO DATA — only if all 3 markets are empty
+//  SEED DEMO DATA — only if forex account 0 is empty
 // ══════════════════════════════════════════════════════════════
-if(!localStorage.getItem('qt_forex')&&!localStorage.getItem('qt_futures')&&!localStorage.getItem('qt_india')) {
-  // Forex demo
+if(!localStorage.getItem(getAcctKey('forex',0))&&!localStorage.getItem(getAcctKey('futures',0))&&!localStorage.getItem(getAcctKey('india',0))) {
+  // Forex demo → account 0
   const fd=[
     {id:1,market:'forex',date:'2025-09-17',session:'London',symbol:'USDCHF',type:'Buy',tf:'1h',openPrice:0.84364,sl:0.84212,tp:0.85266,closedPrice:0.84563,rr:1.31,lots:0.29,commission:0.58,profit:67.66,outcome:'Win',emotion:'Calm',openDT:'2025-09-18T14:25',closeDT:'2025-09-18T21:49',notes:'Clean breakout setup',mistakes:'',img:null},
     {id:2,market:'forex',date:'2025-09-18',session:'Asian',symbol:'NZDUSD',type:'Sell',tf:'15m',openPrice:0.62076,sl:0.62116,tp:0.61896,closedPrice:0.62117,rr:0.5,lots:1.3,commission:2.60,profit:-55.90,outcome:'Loss',emotion:'FOMO',openDT:'2025-09-18T12:34',closeDT:'2025-09-18T12:47',notes:'Entered late',mistakes:'Chased price',img:null},
@@ -1915,23 +2173,23 @@ if(!localStorage.getItem('qt_forex')&&!localStorage.getItem('qt_futures')&&!loca
     {id:4,market:'forex',date:'2025-09-25',session:'London',symbol:'EURAUD',type:'Buy',tf:'4h',openPrice:1.62,sl:1.6176,tp:1.6314,closedPrice:1.6293,rr:2.5,lots:0.31,commission:0.62,profit:193.76,outcome:'Win',emotion:'Patient',openDT:'2025-09-25T05:16',closeDT:'2025-09-26T06:10',notes:'Waited 2 days for this setup',mistakes:'',img:null},
     {id:5,market:'forex',date:'2025-09-27',session:'New York',symbol:'EURUSD',type:'Sell',tf:'1h',openPrice:1.11952,sl:1.12161,tp:1.11254,closedPrice:1.11576,rr:1.8,lots:0.24,commission:0.48,profit:89.76,outcome:'Win',emotion:'Calm',openDT:'2025-09-27T18:27',closeDT:'2025-09-27T22:42',notes:'',mistakes:'',img:null},
   ];
-  localStorage.setItem('qt_forex', JSON.stringify(fd));
+  localStorage.setItem(getAcctKey('forex',0), JSON.stringify(fd));
 
-  // Futures demo
+  // Futures demo → account 0
   const fud=[
     {id:101,market:'futures',date:'2025-10-01',session:'NY Open',symbol:'ES (S&P 500)',type:'Long',tf:'15m',openPrice:5750,sl:5730,tp:5800,closedPrice:5795,rr:2.25,lots:2,commission:4.50,profit:225,outcome:'Win',emotion:'Confident',openDT:'2025-10-01T09:35',closeDT:'2025-10-01T11:20',notes:'Breakout above premarket high',mistakes:'',img:null},
     {id:102,market:'futures',date:'2025-10-02',session:'London Open',symbol:'GC (Gold)',type:'Short',tf:'1h',openPrice:2680,sl:2695,tp:2650,closedPrice:2695,rr:2.0,lots:1,commission:3.50,profit:-150,outcome:'Loss',emotion:'FOMO',openDT:'2025-10-02T08:00',closeDT:'2025-10-02T10:15',notes:'Resistance rejection failed',mistakes:'Too early entry',img:null},
     {id:103,market:'futures',date:'2025-10-03',session:'NY Open',symbol:'NQ (Nasdaq 100)',type:'Long',tf:'5m',openPrice:20100,sl:20050,tp:20200,closedPrice:20185,rr:1.7,lots:1,commission:4.00,profit:170,outcome:'Win',emotion:'Calm',openDT:'2025-10-03T09:45',closeDT:'2025-10-03T12:30',notes:'',mistakes:'',img:null},
   ];
-  localStorage.setItem('qt_futures', JSON.stringify(fud));
+  localStorage.setItem(getAcctKey('futures',0), JSON.stringify(fud));
 
-  // India demo
+  // India demo → account 0
   const ind=[
     {id:201,market:'india',date:'2025-10-07',session:'Market Open (9:15-11:00)',symbol:'BANKNIFTY',type:'BUY',tf:'15m',openPrice:51200,sl:51000,tp:51600,closedPrice:51550,rr:1.75,lots:1,commission:42,profit:3500,outcome:'Win',emotion:'Calm',openDT:'2025-10-07T09:20',closeDT:'2025-10-07T10:45',notes:'ORB breakout with volume',mistakes:'',img:null},
     {id:202,market:'india',date:'2025-10-08',session:'Mid Session (11:00-1:00)',symbol:'NIFTY',type:'SELL',tf:'5m',openPrice:24500,sl:24600,tp:24300,closedPrice:24600,rr:2.0,lots:2,commission:38,profit:-2000,outcome:'Loss',emotion:'Revenge',openDT:'2025-10-08T11:30',closeDT:'2025-10-08T12:15',notes:'Revenge trade after morning loss',mistakes:'No setup, emotional',img:null},
     {id:203,market:'india',date:'2025-10-09',session:'Market Open (9:15-11:00)',symbol:'RELIANCE',type:'BUY',tf:'15m',openPrice:2850,sl:2830,tp:2900,closedPrice:2892,rr:2.1,lots:50,commission:55,profit:2100,outcome:'Win',emotion:'Patient',openDT:'2025-10-09T09:25',closeDT:'2025-10-09T10:50',notes:'Support bounce with high volume',mistakes:'',img:null},
   ];
-  localStorage.setItem('qt_india', JSON.stringify(ind));
+  localStorage.setItem(getAcctKey('india',0), JSON.stringify(ind));
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1939,6 +2197,7 @@ if(!localStorage.getItem('qt_forex')&&!localStorage.getItem('qt_futures')&&!loca
 // ══════════════════════════════════════════════════════════════
 loadTrades();
 applyMarketUI(mkt);
+renderAcctBar();
 // Restore active market button
 (function(){
   const btn=document.querySelector(`.mkt-btn[onclick*="'${mkt}'"]`);
@@ -1951,29 +2210,32 @@ renderAll();
 //  ☁ GOOGLE DRIVE SAVE — Step-by-step guide + auto backup
 // ══════════════════════════════════════════════════════════════
 function saveToDrive() {
-  // Step 1: auto-generate backup for ALL 3 markets
+  // Backup ALL accounts across all markets
   const markets = ['forex','futures','india'];
   const results = [];
   let downloaded = 0;
 
   markets.forEach(m => {
-    const t = JSON.parse(localStorage.getItem(CFG[m].key) || '[]');
-    if(t.length > 0) {
-      const data = {version:3, market:m, marketLabel:CFG[m].label,
-        exportedAt:new Date().toISOString(), tradeCount:t.length, trades:t};
-      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      const date = new Date().toISOString().slice(0,10);
-      a.href     = url;
-      a.download = `QT_${m.toUpperCase()}_${date}.json`;
-      setTimeout(() => { a.click(); URL.revokeObjectURL(url); }, downloaded * 600);
-      downloaded++;
-      results.push({market:m, label:CFG[m].label, count:t.length});
+    const names = getAcctNames(m);
+    for (let i = 0; i < CFG[m].accountCount; i++) {
+      const t = JSON.parse(localStorage.getItem(getAcctKey(m, i)) || '[]');
+      if(t.length > 0) {
+        const data = {version:4, market:m, acctIdx:i, acctName:names[i], marketLabel:CFG[m].label,
+          exportedAt:new Date().toISOString(), tradeCount:t.length, trades:t};
+        const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        const date = new Date().toISOString().slice(0,10);
+        a.href     = url;
+        a.download = `QT_${m.toUpperCase()}_${names[i].replace(/ /g,'_')}_${date}.json`;
+        setTimeout(() => { a.click(); URL.revokeObjectURL(url); }, downloaded * 600);
+        downloaded++;
+        results.push({market:m, label:names[i], count:t.length});
+      }
     }
   });
 
-  // Step 2: Show Drive guide modal
+  // Show Drive guide modal
   showDriveModal(results, downloaded);
 }
 
@@ -2076,7 +2338,9 @@ function closeDriveBg(e) { if(e.target===document.getElementById('driveModal')) 
   const sevenDays = 7 * 24 * 60 * 60 * 1000;
   if(!lastBackup || (now - parseInt(lastBackup)) > sevenDays) {
     const totalTrades = ['forex','futures','india'].reduce((s,m) => {
-      return s + (JSON.parse(localStorage.getItem(CFG[m].key)||'[]')).length;
+      let count = 0;
+      for(let i=0;i<CFG[m].accountCount;i++) count += (JSON.parse(localStorage.getItem(getAcctKey(m,i))||'[]')).length;
+      return s + count;
     }, 0);
     if(totalTrades > 0) {
       setTimeout(() => {
