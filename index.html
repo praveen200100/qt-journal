@@ -68,6 +68,64 @@ body{
 .mkt-btn:hover{color:var(--t);background:var(--s2);}
 .mkt-btn.on{background:var(--y);color:#000;font-weight:700;}
 
+/* ── ACCOUNT TABS BAR ── */
+.acct-bar{
+  background:#000;border-bottom:1px solid var(--b2);
+  padding:0 24px;height:38px;
+  display:flex;align-items:center;gap:0;
+  position:sticky;top:60px;z-index:298;
+  overflow-x:auto;scrollbar-width:none;
+}
+.acct-bar::-webkit-scrollbar{display:none;}
+.acct-tab{
+  font-family:var(--fm);font-size:10px;letter-spacing:1.5px;
+  padding:0 14px;height:38px;min-width:90px;
+  background:transparent;border:none;border-right:1px solid var(--b2);
+  color:var(--t2);cursor:pointer;transition:all .15s;
+  text-transform:uppercase;white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
+}
+.acct-tab:hover{color:var(--t);background:var(--s2);}
+.acct-tab.on{color:#000;background:var(--y);font-weight:700;}
+.acct-tab.editing{background:var(--b1);cursor:default;padding:0 8px;}
+
+.acct-inline-input{
+  font-family:var(--fm);font-size:10px;letter-spacing:1.5px;
+  text-transform:uppercase;
+  background:transparent;border:none;border-bottom:2px solid var(--y);
+  color:#000;outline:none;width:110px;padding:2px 4px;
+  caret-color:#000;
+}
+
+/* account rename modal */
+.ar-modal-bg{
+  display:none;position:fixed;inset:0;z-index:700;
+  background:rgba(0,0,0,.78);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+.ar-modal-bg.on{display:flex;}
+.ar-modal{
+  background:var(--s2);border:2px solid var(--y);
+  padding:28px 32px;min-width:300px;max-width:400px;width:92%;
+}
+.ar-modal h3{font-family:var(--fd);font-size:22px;letter-spacing:4px;color:var(--y);margin-bottom:18px;}
+.ar-modal label{font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--t2);display:block;margin-bottom:6px;}
+.ar-modal input{
+  width:100%;background:var(--b1);border:1px solid var(--b3);
+  color:var(--t);font-family:var(--fm);font-size:13px;
+  padding:10px 12px;outline:none;letter-spacing:1px;margin-bottom:18px;
+}
+.ar-modal input:focus{border-color:var(--y);}
+.ar-btns{display:flex;gap:10px;}
+.ar-btns button{
+  flex:1;font-family:var(--fm);font-size:10px;letter-spacing:2px;
+  padding:10px;border:1px solid var(--b3);background:transparent;
+  color:var(--t2);cursor:pointer;text-transform:uppercase;transition:all .15s;
+}
+.ar-btns button:hover{border-color:var(--y);color:var(--y);}
+.ar-btns .ar-save{background:var(--y);color:#000;border-color:var(--y);font-weight:700;}
+.ar-btns .ar-save:hover{background:var(--y2);}
+
 /* NAV TABS */
 .nav-tabs{display:flex;gap:0;}
 .ntab{
@@ -78,46 +136,6 @@ body{
 }
 .ntab:hover{color:var(--t);}
 .ntab.on{color:var(--y);border-bottom-color:var(--y);}
-
-/* ── ACCOUNT TABS BAR ── */
-.acct-bar{
-  background:#000; border-bottom:1px solid var(--b2);
-  padding:0 24px; min-height:38px;
-  display:flex; align-items:center; gap:0;
-  position:sticky; top:60px; z-index:298;
-  overflow-x:auto; overflow-y:hidden;
-  scrollbar-width:none;
-}
-.acct-bar::-webkit-scrollbar{display:none;}
-.acct-bar-label{
-  font-family:var(--fm);font-size:9px;letter-spacing:2px;
-  color:var(--t3);text-transform:uppercase;margin-right:12px;
-  white-space:nowrap;flex-shrink:0;
-}
-.acct-tab{
-  font-family:var(--fm);font-size:10px;letter-spacing:1px;
-  padding:6px 16px;border:none;background:transparent;
-  color:var(--t2);cursor:pointer;transition:all .15s;
-  text-transform:uppercase;white-space:nowrap;flex-shrink:0;
-  border-bottom:2px solid transparent;
-  position:relative;
-}
-.acct-tab:hover{color:var(--t);background:var(--s2);}
-.acct-tab.on{color:var(--y);border-bottom-color:var(--y);background:var(--yg);}
-.acct-tab .acct-name{pointer-events:none;}
-.acct-tab .acct-rename-inp{
-  font-family:var(--fm);font-size:10px;letter-spacing:1px;
-  background:transparent;border:none;border-bottom:1px solid var(--y);
-  color:var(--y);width:80px;outline:none;text-transform:uppercase;
-  padding:0;
-}
-.acct-rename-btn{
-  font-family:var(--fm);font-size:9px;letter-spacing:1px;
-  padding:4px 10px;border:1px solid var(--b3);background:transparent;
-  color:var(--t3);cursor:pointer;transition:all .15s;margin-left:8px;
-  text-transform:uppercase;white-space:nowrap;flex-shrink:0;
-}
-.acct-rename-btn:hover{border-color:var(--y);color:var(--y);}
 
 /* TOP-RIGHT */
 .topbar-right{display:flex;align-items:center;gap:6px;}
@@ -373,11 +391,6 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 /* ══ RESPONSIVE — MOBILE ══ */
 @media(max-width:768px){
 
-  /* ACCOUNT BAR */
-  .acct-bar{padding:0 12px;top:auto;position:relative;}
-  .acct-tab{font-size:9px;padding:5px 10px;letter-spacing:0;}
-  .acct-bar-label{font-size:8px;margin-right:8px;}
-
   /* TOPBAR */
   .topbar{
     height:auto;
@@ -396,6 +409,9 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
   /* MARKET SWITCHER */
   .mkt-sw{width:100%;order:3;}
   .mkt-btn{flex:1;padding:8px 6px;font-size:10px;letter-spacing:1px;text-align:center;}
+  /* ACCOUNT BAR */
+  .acct-bar{padding:0 6px;top:auto;height:36px;}
+  .acct-tab{padding:0 10px;min-width:72px;font-size:9px;letter-spacing:1px;}
 
   /* TOPBAR RIGHT */
   .topbar-right{
@@ -705,8 +721,19 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 </div>
 
 <!-- ══ ACCOUNT TABS BAR ══ -->
-<div class="acct-bar" id="acctBar">
-  <span class="acct-bar-label" id="acctBarLabel">ACCOUNTS</span>
+<div class="acct-bar" id="acctBar"></div>
+
+<!-- ══ ACCOUNT RENAME MODAL ══ -->
+<div class="ar-modal-bg" id="arModal" onclick="arBgClick(event)">
+  <div class="ar-modal">
+    <h3>RENAME ACCOUNT</h3>
+    <label for="arInput">ACCOUNT NAME</label>
+    <input type="text" id="arInput" maxlength="18" placeholder="Enter name...">
+    <div class="ar-btns">
+      <button onclick="closeArModal()">CANCEL</button>
+      <button class="ar-save" onclick="saveArName()">SAVE</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ PAGE: OVERVIEW ══ -->
@@ -912,11 +939,12 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 
 <script>
 // ══════════════════════════════════════════════════════════════
-//  MARKET CONFIGS — Each market has its own config.
-//  Each account uses key: qt_{marketType}_{accountIndex}
+//  MARKET CONFIGS — Each market has its own localStorage key,
+//  its own pair lists, labels, currency
 // ══════════════════════════════════════════════════════════════
 const CFG = {
   forex: {
+    key:       'qt_forex',
     label:     'FOREX JOURNAL',
     cur:       '$',
     baseAmt:   5000,
@@ -938,10 +966,9 @@ const CFG = {
       {g:'Metals & Crypto',i:['XAUUSD','XAGUSD','BTCUSD','ETHUSD','LTCUSD']},
       {g:'Indices',        i:['US30','NAS100','SPX500','GER40','UK100','JP225']},
     ],
-    accountCount: 5,
-    defaultNames: ['FX ACCOUNT 1','FX ACCOUNT 2','FX ACCOUNT 3','FX ACCOUNT 4','FX ACCOUNT 5'],
   },
   futures: {
+    key:       'qt_futures',
     label:     'FOREX FUTURES',
     cur:       '$',
     baseAmt:   10000,
@@ -959,16 +986,15 @@ const CFG = {
     sessions: ['NY Open','London Open','Asian Session','Pre-Market','After Hours','Overnight'],
     pairs: [
       {g:'FX Futures',     i:['6E (EUR/USD)','6B (GBP/USD)','6J (USD/JPY)','6A (AUD/USD)','6C (USD/CAD)','6N (NZD/USD)','6S (USD/CHF)','6M (MXN)','6L (BRL)']},
-      {g:'Metal Futures',  i:['GC (Gold)','SI (Silver)','PL (Platinum)','PA (Palladium)','HG (Copper)']},
-      {g:'Energy Futures', i:['CL (Crude Oil)','NG (Natural Gas)','RB (Gasoline)','HO (Heating Oil)','BZ (Brent Crude)']},
-      {g:'Equity Futures', i:['ES (S&P 500)','NQ (Nasdaq 100)','YM (Dow Jones)','RTY (Russell 2000)','EMD (S&P Midcap)']},
+      {g:'Metal Futures',  i:['GC (Gold)','MGC (Micro Gold)','SI (Silver)','SIL (Micro Silver)','PL (Platinum)','PA (Palladium)','HG (Copper)','MHG (Micro Copper)']},
+      {g:'Energy Futures', i:['CL (Crude Oil)','MCL (Micro Crude Oil)','NG (Natural Gas)','RB (Gasoline)','HO (Heating Oil)','BZ (Brent Crude)']},
+      {g:'Equity Futures', i:['ES (S&P 500)','MES (Micro S&P 500)','NQ (Nasdaq 100)','MNQ (Micro Nasdaq)','YM (Dow Jones)','MYM (Micro Dow)','RTY (Russell 2000)','M2K (Micro Russell)','EMD (S&P Midcap)']},
       {g:'Bond Futures',   i:['ZN (10Y Note)','ZB (30Y Bond)','ZF (5Y Note)','ZT (2Y Note)']},
       {g:'Crypto Futures', i:['BTC Futures (CME)','ETH Futures (CME)','MBT (Micro BTC)','MET (Micro ETH)']},
     ],
-    accountCount: 5,
-    defaultNames: ['FU ACCOUNT 1','FU ACCOUNT 2','FU ACCOUNT 3','FU ACCOUNT 4','FU ACCOUNT 5'],
   },
   india: {
+    key:       'qt_india',
     label:     'INDIAN MARKET',
     cur:       '₹',
     baseAmt:   100000,
@@ -990,40 +1016,130 @@ const CFG = {
       {g:'Commodities (MCX)',  i:['GOLD','GOLDM','SILVER','SILVERM','CRUDEOIL','NATURALGAS','COPPER','ALUMINIUM','ZINC','LEAD','NICKEL']},
       {g:'Currency (NSE/BSE)', i:['USDINR','EURINR','GBPINR','JPYINR','AUDINR','CADINR']},
     ],
-    accountCount: 2,
-    defaultNames: ['INDIA ACCOUNT 1','INDIA ACCOUNT 2'],
   },
 };
 
 // ══════════════════════════════════════════════════════════════
-//  ACCOUNT NAMES — stored in localStorage per market
+//  ACCOUNT SYSTEM — Forex×5, Futures×5, India×2
 // ══════════════════════════════════════════════════════════════
-function getAcctNamesKey(marketType) { return 'qt_acct_names_' + marketType; }
-function getAcctNames(marketType) {
-  const stored = localStorage.getItem(getAcctNamesKey(marketType));
+const ACCT_COUNT = { forex:5, futures:5, india:2 };
+
+// Default names
+const ACCT_DEFAULT_NAMES = {
+  forex:   ['FOREX ACC 1','FOREX ACC 2','FOREX ACC 3','FOREX ACC 4','FOREX ACC 5'],
+  futures: ['FUTURES ACC 1','FUTURES ACC 2','FUTURES ACC 3','FUTURES ACC 4','FUTURES ACC 5'],
+  india:   ['INDIA ACC 1','INDIA ACC 2'],
+};
+
+// Load account names from localStorage
+function getAcctNames(market) {
+  const stored = localStorage.getItem('qt_acct_names_' + market);
   if (stored) return JSON.parse(stored);
-  return [...CFG[marketType].defaultNames];
+  return [...ACCT_DEFAULT_NAMES[market]];
 }
-function saveAcctNames(marketType, names) {
-  localStorage.setItem(getAcctNamesKey(marketType), JSON.stringify(names));
+function saveAcctNames(market, names) {
+  localStorage.setItem('qt_acct_names_' + market, JSON.stringify(names));
 }
-function getAcctKey(marketType, acctIdx) {
-  return 'qt_' + marketType + '_acct' + acctIdx;
+
+// Current account index (0-based) per market
+function getAcctIdx(market) {
+  return parseInt(localStorage.getItem('qt_acct_idx_' + market) || '0');
 }
+function setAcctIdx(market, idx) {
+  localStorage.setItem('qt_acct_idx_' + market, idx);
+}
+
+// Storage key for a specific account
+function acctKey(market, idx) {
+  return CFG[market].key + '_' + (idx + 1);
+}
+
+// Render account tabs bar
+function renderAcctBar() {
+  const bar = document.getElementById('acctBar');
+  const names = getAcctNames(mkt);
+  const activeIdx = getAcctIdx(mkt);
+  bar.innerHTML = names.map((name, i) => {
+    const isOn = i === activeIdx;
+    return `<button class="acct-tab${isOn ? ' on' : ''}"
+      onclick="handleAcctClick(${i})"
+      id="acct-tab-${i}"
+      title="${isOn ? 'Click to rename' : name}">
+      <span class="acct-tab-label" id="acct-label-${i}">${name}</span>
+    </button>`;
+  }).join('');
+}
+
+// Switch account
+function switchAcct(idx) {
+  setAcctIdx(mkt, idx);
+  loadTrades();
+  renderAcctBar();
+  dateFrom = null; dateTo = null;
+  const drFrom = document.getElementById('drFrom');
+  const drTo   = document.getElementById('drTo');
+  if (drFrom) drFrom.value = '';
+  if (drTo)   drTo.value   = '';
+  renderAll();
+  const names = getAcctNames(mkt);
+  toast('▶ ' + names[idx] + ' — LOADED', 'y');
+}
+
+function handleAcctClick(idx) {
+  if (idx === getAcctIdx(mkt)) {
+    // Active tab clicked → inline rename
+    startInlineEdit({stopPropagation:()=>{}}, idx);
+  } else {
+    switchAcct(idx);
+  }
+}
+
+function startInlineEdit(e, idx) {
+  e.stopPropagation();
+  if (idx !== getAcctIdx(mkt)) { switchAcct(idx); setTimeout(() => startInlineEdit(e, idx), 60); return; }
+  const tab = document.getElementById('acct-tab-' + idx);
+  const label = document.getElementById('acct-label-' + idx);
+  if (!tab || !label || tab.classList.contains('editing')) return;
+  const names = getAcctNames(mkt);
+  tab.classList.add('editing');
+  label.innerHTML = `<input class="acct-inline-input" id="acct-inp-${idx}"
+    value="${names[idx]}" maxlength="18"
+    onclick="event.stopPropagation()"
+    onkeydown="acctInlineKey(event,${idx})"
+    onblur="acctInlineBlur(${idx})">`;
+  const inp = document.getElementById('acct-inp-' + idx);
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function acctInlineCommit(idx) {
+  const inp = document.getElementById('acct-inp-' + idx);
+  if (!inp) return;
+  const val = inp.value.trim().toUpperCase();
+  if (val) {
+    const names = getAcctNames(mkt);
+    names[idx] = val;
+    saveAcctNames(mkt, names);
+    toast('✓ ' + val, 'g');
+  }
+  renderAcctBar();
+}
+function acctInlineKey(e, idx) {
+  e.stopPropagation();
+  if (e.key === 'Enter') { e.preventDefault(); acctInlineCommit(idx); }
+  if (e.key === 'Escape') renderAcctBar();
+}
+function acctInlineBlur(idx) { setTimeout(() => acctInlineCommit(idx), 120); }
+
+// Modal stubs (kept for compatibility)
+function openArModal(e, idx) { startInlineEdit(e, idx); }
+function closeArModal() { document.getElementById('arModal').classList.remove('on'); }
+function arBgClick(e) { if (e.target === document.getElementById('arModal')) closeArModal(); }
+function saveArName() { closeArModal(); }
 
 // ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
 let mkt = localStorage.getItem('qt_active_market') || 'forex';
-// activeAcct: per market, which account index (0-based) is selected
-function getActiveAcctKey(marketType) { return 'qt_active_acct_' + marketType; }
-function getActiveAcct(marketType) {
-  return parseInt(localStorage.getItem(getActiveAcctKey(marketType)) || '0', 10);
-}
-function setActiveAcct(marketType, idx) {
-  localStorage.setItem(getActiveAcctKey(marketType), idx.toString());
-}
-
 let trades   = [];
 let curImg   = null;
 let calYear  = new Date().getFullYear();
@@ -1033,77 +1149,11 @@ let dateTo   = null;
 
 function getCFG() { return CFG[mkt]; }
 function getKey() {
-  // Returns the storage key for current market + current account
-  const acctIdx = getActiveAcct(mkt);
-  return getAcctKey(mkt, acctIdx);
+  const idx = getAcctIdx(mkt);
+  return acctKey(mkt, idx);
 }
 function loadTrades() { trades = JSON.parse(localStorage.getItem(getKey()) || '[]'); }
 function saveTrades() { localStorage.setItem(getKey(), JSON.stringify(trades)); }
-
-// ══════════════════════════════════════════════════════════════
-//  ACCOUNT TABS RENDER
-// ══════════════════════════════════════════════════════════════
-function renderAcctBar() {
-  const bar = document.getElementById('acctBar');
-  const c = CFG[mkt];
-  const names = getAcctNames(mkt);
-  const activeIdx = getActiveAcct(mkt);
-
-  let html = `<span class="acct-bar-label" id="acctBarLabel">${c.label.replace(' JOURNAL','').replace('INDIAN ','IN')} ACCOUNTS</span>`;
-  for (let i = 0; i < c.accountCount; i++) {
-    const isOn = i === activeIdx ? 'on' : '';
-    html += `<button class="acct-tab ${isOn}" onclick="switchAcct(${i})" ondblclick="startRenameAcct(${i})" title="Double-click to rename">
-      <span class="acct-name" id="acctName_${i}">${names[i]}</span>
-    </button>`;
-  }
-  bar.innerHTML = html;
-}
-
-function switchAcct(idx) {
-  setActiveAcct(mkt, idx);
-  loadTrades();
-  renderAcctBar();
-  // Update logo label
-  const names = getAcctNames(mkt);
-  document.getElementById('logoLabel').textContent = names[idx];
-  dateFrom = null; dateTo = null;
-  const drFrom = document.getElementById('drFrom');
-  const drTo   = document.getElementById('drTo');
-  if (drFrom) drFrom.value = '';
-  if (drTo)   drTo.value   = '';
-  renderAll();
-  toast('▶ ' + names[idx] + ' — LOADED', 'y');
-}
-
-function startRenameAcct(idx) {
-  const nameEl = document.getElementById('acctName_' + idx);
-  if (!nameEl) return;
-  const tab = nameEl.closest('.acct-tab');
-  const names = getAcctNames(mkt);
-  tab.innerHTML = `<input class="acct-rename-inp" id="renameInp_${idx}" value="${names[idx]}"
-    onblur="finishRenameAcct(${idx})"
-    onkeydown="if(event.key==='Enter')finishRenameAcct(${idx});if(event.key==='Escape')renderAcctBar();"
-    onclick="event.stopPropagation()"
-  >`;
-  const inp = document.getElementById('renameInp_' + idx);
-  if (inp) { inp.focus(); inp.select(); }
-}
-
-function finishRenameAcct(idx) {
-  const inp = document.getElementById('renameInp_' + idx);
-  if (!inp) return;
-  const newName = inp.value.trim().toUpperCase() || CFG[mkt].defaultNames[idx];
-  const names = getAcctNames(mkt);
-  names[idx] = newName;
-  saveAcctNames(mkt, names);
-  renderAcctBar();
-  // Update logo if this is the active account
-  if (idx === getActiveAcct(mkt)) {
-    document.getElementById('logoLabel').textContent = newName;
-  }
-  toast('✎ RENAMED: ' + newName, 'y');
-}
-
 
 // ══════════════════════════════════════════════════════════════
 //  MARKET SWITCH
@@ -1113,24 +1163,22 @@ function switchMarket(type, btn) {
   localStorage.setItem('qt_active_market', type);
   document.querySelectorAll('.mkt-btn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  renderAcctBar();
   loadTrades();
   applyMarketUI(type);
+  renderAcctBar();
   dateFrom = null; dateTo = null;
   document.getElementById('drFrom').value = '';
   document.getElementById('drTo').value = '';
   renderAll();
   const names = getAcctNames(type);
-  const acctIdx = getActiveAcct(type);
-  toast('▶ ' + getCFG().label + ' / ' + names[acctIdx] + ' — LOADED', 'y');
+  const idx = getAcctIdx(type);
+  toast('▶ ' + getCFG().label + ' / ' + names[idx] + ' — LOADED', 'y');
 }
 
 function applyMarketUI(type) {
   const c = CFG[type];
   // Logo
-  const acctIdx = getActiveAcct(type);
-  const acctNames = getAcctNames(type);
-  document.getElementById('logoLabel').textContent = acctNames[acctIdx];
+  document.getElementById('logoLabel').textContent = c.label;
   // Modal title
   document.getElementById('modalTitle').textContent = 'ADD TRADE — ' + c.label;
   // Labels
@@ -2079,15 +2127,14 @@ function downloadShare() {
 function exportBackup() {
   if(!trades.length){toast('No trades to backup!','y');return;}
   const c=getCFG();
-  const acctIdx=getActiveAcct(mkt);
+  const idx=getAcctIdx(mkt);
   const names=getAcctNames(mkt);
-  const acctName=names[acctIdx];
-  const data={version:4,market:mkt,acctIdx,acctName,marketLabel:c.label,exportedAt:new Date().toISOString(),tradeCount:trades.length,trades};
+  const data={version:4,market:mkt,accountIdx:idx,accountName:names[idx],marketLabel:c.label,exportedAt:new Date().toISOString(),tradeCount:trades.length,trades};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-  a.download=`QT_${mkt.toUpperCase()}_${acctName.replace(/ /g,'_')}_${new Date().toISOString().slice(0,10)}.json`;
+  a.download=`QT_${mkt.toUpperCase()}_ACC${idx+1}_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
-  toast(`✓ ${trades.length} trades backed up — ${acctName}`,'g');
+  toast(`✓ ${trades.length} trades backed up — ${names[idx]}`,'g');
 }
 function importBackup() { document.getElementById('importFile').click(); }
 function loadBackup(input) {
@@ -2098,30 +2145,19 @@ function loadBackup(input) {
       const d=JSON.parse(e.target.result);
       const imp=Array.isArray(d)?d:d.trades||[];
       if(!imp.length){toast('No trades in file','y');return;}
-      // Switch market if needed
+      // If backup has a market tag, switch to that market + account
       if(d.market && CFG[d.market]) {
         if(d.market !== mkt) {
-          const btn=document.querySelector(`.mkt-btn[onclick*="'${d.market}'"]`);
+          const btn=document.querySelector(`.mkt-btn[onclick*="\'${d.market}\'"]`);
           if(btn) { document.querySelectorAll('.mkt-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
           mkt=d.market; localStorage.setItem('qt_active_market',mkt);
           applyMarketUI(mkt);
         }
-        // Switch account if backup has acctIdx
-        if(typeof d.acctIdx === 'number' && d.acctIdx < CFG[mkt].accountCount) {
-          setActiveAcct(mkt, d.acctIdx);
-          // Restore account name if present
-          if(d.acctName) {
-            const names=getAcctNames(mkt);
-            names[d.acctIdx]=d.acctName;
-            saveAcctNames(mkt, names);
-          }
-        }
-        loadTrades();
-        renderAcctBar();
+        if(typeof d.accountIdx === 'number') setAcctIdx(mkt, d.accountIdx);
+        loadTrades(); renderAcctBar();
       }
-      const acctIdx=getActiveAcct(mkt);
-      const names=getAcctNames(mkt);
-      const ok=confirm(`Found ${imp.length} trades (${d.acctName||d.marketLabel||'Unknown'}).\n\nOK = MERGE with current ${trades.length} trades\nCANCEL = REPLACE all current trades`);
+      const accLabel = d.accountName || d.marketLabel || 'Unknown';
+      const ok=confirm(`Found ${imp.length} trades (${accLabel}).\n\nOK = MERGE with current ${trades.length} trades\nCANCEL = REPLACE all current trades`);
       if(ok){
         const ids=new Set(trades.map(t=>t.id));
         const add=imp.filter(t=>!ids.has(t.id));
@@ -2162,10 +2198,10 @@ function toast(msg,type) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SEED DEMO DATA — only if forex account 0 is empty
+//  SEED DEMO DATA — only if all 3 markets are empty
 // ══════════════════════════════════════════════════════════════
-if(!localStorage.getItem(getAcctKey('forex',0))&&!localStorage.getItem(getAcctKey('futures',0))&&!localStorage.getItem(getAcctKey('india',0))) {
-  // Forex demo → account 0
+if(!localStorage.getItem('qt_forex')&&!localStorage.getItem('qt_futures')&&!localStorage.getItem('qt_india')) {
+  // Forex demo
   const fd=[
     {id:1,market:'forex',date:'2025-09-17',session:'London',symbol:'USDCHF',type:'Buy',tf:'1h',openPrice:0.84364,sl:0.84212,tp:0.85266,closedPrice:0.84563,rr:1.31,lots:0.29,commission:0.58,profit:67.66,outcome:'Win',emotion:'Calm',openDT:'2025-09-18T14:25',closeDT:'2025-09-18T21:49',notes:'Clean breakout setup',mistakes:'',img:null},
     {id:2,market:'forex',date:'2025-09-18',session:'Asian',symbol:'NZDUSD',type:'Sell',tf:'15m',openPrice:0.62076,sl:0.62116,tp:0.61896,closedPrice:0.62117,rr:0.5,lots:1.3,commission:2.60,profit:-55.90,outcome:'Loss',emotion:'FOMO',openDT:'2025-09-18T12:34',closeDT:'2025-09-18T12:47',notes:'Entered late',mistakes:'Chased price',img:null},
@@ -2173,23 +2209,23 @@ if(!localStorage.getItem(getAcctKey('forex',0))&&!localStorage.getItem(getAcctKe
     {id:4,market:'forex',date:'2025-09-25',session:'London',symbol:'EURAUD',type:'Buy',tf:'4h',openPrice:1.62,sl:1.6176,tp:1.6314,closedPrice:1.6293,rr:2.5,lots:0.31,commission:0.62,profit:193.76,outcome:'Win',emotion:'Patient',openDT:'2025-09-25T05:16',closeDT:'2025-09-26T06:10',notes:'Waited 2 days for this setup',mistakes:'',img:null},
     {id:5,market:'forex',date:'2025-09-27',session:'New York',symbol:'EURUSD',type:'Sell',tf:'1h',openPrice:1.11952,sl:1.12161,tp:1.11254,closedPrice:1.11576,rr:1.8,lots:0.24,commission:0.48,profit:89.76,outcome:'Win',emotion:'Calm',openDT:'2025-09-27T18:27',closeDT:'2025-09-27T22:42',notes:'',mistakes:'',img:null},
   ];
-  localStorage.setItem(getAcctKey('forex',0), JSON.stringify(fd));
+  localStorage.setItem('qt_forex', JSON.stringify(fd));
 
-  // Futures demo → account 0
+  // Futures demo
   const fud=[
     {id:101,market:'futures',date:'2025-10-01',session:'NY Open',symbol:'ES (S&P 500)',type:'Long',tf:'15m',openPrice:5750,sl:5730,tp:5800,closedPrice:5795,rr:2.25,lots:2,commission:4.50,profit:225,outcome:'Win',emotion:'Confident',openDT:'2025-10-01T09:35',closeDT:'2025-10-01T11:20',notes:'Breakout above premarket high',mistakes:'',img:null},
     {id:102,market:'futures',date:'2025-10-02',session:'London Open',symbol:'GC (Gold)',type:'Short',tf:'1h',openPrice:2680,sl:2695,tp:2650,closedPrice:2695,rr:2.0,lots:1,commission:3.50,profit:-150,outcome:'Loss',emotion:'FOMO',openDT:'2025-10-02T08:00',closeDT:'2025-10-02T10:15',notes:'Resistance rejection failed',mistakes:'Too early entry',img:null},
     {id:103,market:'futures',date:'2025-10-03',session:'NY Open',symbol:'NQ (Nasdaq 100)',type:'Long',tf:'5m',openPrice:20100,sl:20050,tp:20200,closedPrice:20185,rr:1.7,lots:1,commission:4.00,profit:170,outcome:'Win',emotion:'Calm',openDT:'2025-10-03T09:45',closeDT:'2025-10-03T12:30',notes:'',mistakes:'',img:null},
   ];
-  localStorage.setItem(getAcctKey('futures',0), JSON.stringify(fud));
+  localStorage.setItem('qt_futures', JSON.stringify(fud));
 
-  // India demo → account 0
+  // India demo
   const ind=[
     {id:201,market:'india',date:'2025-10-07',session:'Market Open (9:15-11:00)',symbol:'BANKNIFTY',type:'BUY',tf:'15m',openPrice:51200,sl:51000,tp:51600,closedPrice:51550,rr:1.75,lots:1,commission:42,profit:3500,outcome:'Win',emotion:'Calm',openDT:'2025-10-07T09:20',closeDT:'2025-10-07T10:45',notes:'ORB breakout with volume',mistakes:'',img:null},
     {id:202,market:'india',date:'2025-10-08',session:'Mid Session (11:00-1:00)',symbol:'NIFTY',type:'SELL',tf:'5m',openPrice:24500,sl:24600,tp:24300,closedPrice:24600,rr:2.0,lots:2,commission:38,profit:-2000,outcome:'Loss',emotion:'Revenge',openDT:'2025-10-08T11:30',closeDT:'2025-10-08T12:15',notes:'Revenge trade after morning loss',mistakes:'No setup, emotional',img:null},
     {id:203,market:'india',date:'2025-10-09',session:'Market Open (9:15-11:00)',symbol:'RELIANCE',type:'BUY',tf:'15m',openPrice:2850,sl:2830,tp:2900,closedPrice:2892,rr:2.1,lots:50,commission:55,profit:2100,outcome:'Win',emotion:'Patient',openDT:'2025-10-09T09:25',closeDT:'2025-10-09T10:50',notes:'Support bounce with high volume',mistakes:'',img:null},
   ];
-  localStorage.setItem(getAcctKey('india',0), JSON.stringify(ind));
+  localStorage.setItem('qt_india', JSON.stringify(ind));
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2210,24 +2246,26 @@ renderAll();
 //  ☁ GOOGLE DRIVE SAVE — Step-by-step guide + auto backup
 // ══════════════════════════════════════════════════════════════
 function saveToDrive() {
-  // Backup ALL accounts across all markets
+  // Step 1: auto-generate backup for ALL markets × ALL accounts
   const markets = ['forex','futures','india'];
   const results = [];
   let downloaded = 0;
 
   markets.forEach(m => {
+    const count = ACCT_COUNT[m];
     const names = getAcctNames(m);
-    for (let i = 0; i < CFG[m].accountCount; i++) {
-      const t = JSON.parse(localStorage.getItem(getAcctKey(m, i)) || '[]');
+    for (let i = 0; i < count; i++) {
+      const key = acctKey(m, i);
+      const t = JSON.parse(localStorage.getItem(key) || '[]');
       if(t.length > 0) {
-        const data = {version:4, market:m, acctIdx:i, acctName:names[i], marketLabel:CFG[m].label,
-          exportedAt:new Date().toISOString(), tradeCount:t.length, trades:t};
+        const data = {version:4, market:m, accountIdx:i, accountName:names[i],
+          marketLabel:CFG[m].label, exportedAt:new Date().toISOString(), tradeCount:t.length, trades:t};
         const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
         const date = new Date().toISOString().slice(0,10);
         a.href     = url;
-        a.download = `QT_${m.toUpperCase()}_${names[i].replace(/ /g,'_')}_${date}.json`;
+        a.download = `QT_${m.toUpperCase()}_ACC${i+1}_${date}.json`;
         setTimeout(() => { a.click(); URL.revokeObjectURL(url); }, downloaded * 600);
         downloaded++;
         results.push({market:m, label:names[i], count:t.length});
@@ -2235,7 +2273,7 @@ function saveToDrive() {
     }
   });
 
-  // Show Drive guide modal
+  // Step 2: Show Drive guide modal
   showDriveModal(results, downloaded);
 }
 
@@ -2338,9 +2376,7 @@ function closeDriveBg(e) { if(e.target===document.getElementById('driveModal')) 
   const sevenDays = 7 * 24 * 60 * 60 * 1000;
   if(!lastBackup || (now - parseInt(lastBackup)) > sevenDays) {
     const totalTrades = ['forex','futures','india'].reduce((s,m) => {
-      let count = 0;
-      for(let i=0;i<CFG[m].accountCount;i++) count += (JSON.parse(localStorage.getItem(getAcctKey(m,i))||'[]')).length;
-      return s + count;
+      return s + (JSON.parse(localStorage.getItem(CFG[m].key)||'[]')).length;
     }, 0);
     if(totalTrades > 0) {
       setTimeout(() => {
