@@ -236,6 +236,8 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
 .sym-cell{font-weight:800;font-size:14px;color:var(--y);font-family:var(--fm);}
 .share-btn{background:var(--yg);border:1px solid rgba(245,200,0,.3);color:var(--y);font-family:var(--fm);font-size:9px;letter-spacing:1px;padding:4px 10px;cursor:pointer;transition:all .15s;text-transform:uppercase;}
 .share-btn:hover{background:var(--y);color:#000;font-weight:700;}
+.del-btn{background:rgba(255,34,68,0.08);border:1px solid rgba(255,34,68,.3);color:var(--r);font-size:11px;padding:4px 8px;cursor:pointer;transition:all .15s;}
+.del-btn:hover{background:var(--r);color:#fff;}
 .tbl-empty{text-align:center;padding:56px;color:var(--t3);font-family:var(--fm);font-size:11px;letter-spacing:2px;}
 
 /* BADGE */
@@ -949,6 +951,16 @@ function clearForm() {
   rmImg({stopPropagation:()=>{}});
 }
 
+function deleteTrade(id) {
+  const t = trades.find(x=>x.id===id);
+  if(!t) return;
+  if(!confirm(`Delete this trade?\n\n${t.symbol} | ${t.type} | ${t.date}\nP&L: ${fmt(t.profit||0)}\n\nThis cannot be undone!`)) return;
+  trades = trades.filter(x=>x.id!==id);
+  saveTrades();
+  renderAll();
+  toast('🗑 Trade deleted','r');
+}
+
 // ══════════════════════════════════════════════════════════════
 //  STATS COMPUTE
 // ══════════════════════════════════════════════════════════════
@@ -1329,7 +1341,7 @@ function renderHistory() {
     const tc=t.type===c.typeLong?'type-buy':'type-sell';
     const od=t.openDT?t.openDT.replace('T',' '):(t.date||'—');
     const cd=t.closeDT?t.closeDT.replace('T',' '):'—';
-    return `<tr><td><button class="share-btn" onclick="openShareCard(${t.id})">↗ SHARE</button></td><td class="sym-cell">${t.symbol||'—'}</td><td class="${tc}">${t.type}</td><td style="color:var(--t2);font-size:13px">${od}</td><td>${t.openPrice||'—'}</td><td style="color:var(--t2);font-size:13px">${cd}</td><td>${t.closedPrice||'—'}</td><td style="color:var(--g)">${t.tp||'—'}</td><td style="color:var(--r)">${t.sl||'—'}</td><td style="color:var(--t2)">${t.lots||'—'}</td><td style="color:var(--t2)">${c.cur}${(t.commission||0).toFixed(2)}</td><td class="${pc}" style="font-weight:700">${t.profit?ps+c.cur+Math.abs(t.profit).toFixed(2):c.cur+'0.00'}</td></tr>`;
+    return `<tr><td style="display:flex;gap:4px"><button class="share-btn" onclick="openShareCard(${t.id})">↗ SHARE</button><button class="del-btn" onclick="deleteTrade(${t.id})">🗑</button></td><td class="sym-cell">${t.symbol||'—'}</td><td class="${tc}">${t.type}</td><td style="color:var(--t2);font-size:13px">${od}</td><td>${t.openPrice||'—'}</td><td style="color:var(--t2);font-size:13px">${cd}</td><td>${t.closedPrice||'—'}</td><td style="color:var(--g)">${t.tp||'—'}</td><td style="color:var(--r)">${t.sl||'—'}</td><td style="color:var(--t2)">${t.lots||'—'}</td><td style="color:var(--t2)">${c.cur}${(t.commission||0).toFixed(2)}</td><td class="${pc}" style="font-weight:700">${t.profit?ps+c.cur+Math.abs(t.profit).toFixed(2):c.cur+'0.00'}</td></tr>`;
   }).join('');
 }
 
