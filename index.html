@@ -667,6 +667,15 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
   font-family:var(--fm);font-size:11px;color:var(--t2);
   text-align:center;margin-top:12px;letter-spacing:2px;
 }
+.login-tabs{display:flex;margin-bottom:28px;border-bottom:2px solid var(--b2);}
+.login-tab{
+  flex:1;font-family:var(--fm);font-size:11px;letter-spacing:2px;
+  padding:10px;border:none;background:transparent;
+  color:var(--t2);cursor:pointer;text-transform:uppercase;
+  border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;
+}
+.login-tab:hover{color:var(--t);}
+.login-tab.on{color:var(--y);border-bottom-color:var(--y);}
 .user-info-bar{
   font-family:var(--fm);font-size:10px;color:var(--t2);
   letter-spacing:1px;display:flex;align-items:center;gap:8px;
@@ -688,16 +697,43 @@ tbody td{padding:12px 14px;font-size:14px;color:var(--t);white-space:nowrap;font
   <div class="login-box">
     <div class="login-logo">QT</div>
     <div class="login-sub">QUANTUM TRADING JOURNAL</div>
-    <div class="login-title">SIGN IN</div>
-    <div class="login-field">
-      <label>EMAIL</label>
-      <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+
+    <!-- Tabs -->
+    <div class="login-tabs">
+      <button class="login-tab on" id="tabLogin" onclick="switchLoginTab('login')">SIGN IN</button>
+      <button class="login-tab" id="tabSignup" onclick="switchLoginTab('signup')">CREATE ACCOUNT</button>
     </div>
-    <div class="login-field">
-      <label>PASSWORD</label>
-      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+
+    <!-- Sign In Panel -->
+    <div id="panelLogin">
+      <div class="login-field">
+        <label>EMAIL</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="login-field">
+        <label>PASSWORD</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">ENTER WAR ROOM</button>
     </div>
-    <button class="login-btn" id="loginBtn" onclick="doLogin()">ENTER WAR ROOM</button>
+
+    <!-- Sign Up Panel -->
+    <div id="panelSignup" style="display:none">
+      <div class="login-field">
+        <label>EMAIL <span style="color:var(--t2);font-size:9px">(நீங்கள் register ஆன email மட்டும்)</span></label>
+        <input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="login-field">
+        <label>PASSWORD <span style="color:var(--t2);font-size:9px">(min 6 characters)</span></label>
+        <input type="password" id="signupPass" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="login-field">
+        <label>CONFIRM PASSWORD</label>
+        <input type="password" id="signupPass2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="login-btn" id="signupBtn" onclick="doSignup()">CREATE ACCOUNT</button>
+    </div>
+
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
@@ -1119,11 +1155,83 @@ async function doLogout() {
   location.reload();
 }
 
+// Tab switch
+function switchLoginTab(tab) {
+  document.getElementById('panelLogin').style.display  = tab === 'login'  ? 'block' : 'none';
+  document.getElementById('panelSignup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('on',  tab === 'login');
+  document.getElementById('tabSignup').classList.toggle('on', tab === 'signup');
+  document.getElementById('loginErr').textContent = '';
+}
+
+// Signup — check allowlist first, then create account
+async function doSignup() {
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('signupPass').value;
+  const pass2 = document.getElementById('signupPass2').value;
+  const btn   = document.getElementById('signupBtn');
+  const err   = document.getElementById('loginErr');
+
+  err.textContent = '';
+
+  if (!email) { err.textContent = '✕ Email required'; return; }
+  if (pass.length < 6) { err.textContent = '✕ Password min 6 characters'; return; }
+  if (pass !== pass2) { err.textContent = '✕ Passwords do not match'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'CHECKING...';
+
+  // 1. Check if email is in allowed_emails table
+  const { data: allowed, error: checkErr } = await supa
+    .from('allowed_emails')
+    .select('email')
+    .eq('email', email)
+    .single();
+
+  if (checkErr || !allowed) {
+    err.textContent = '✕ This email is not authorized. Contact your instructor.';
+    btn.disabled = false;
+    btn.textContent = 'CREATE ACCOUNT';
+    return;
+  }
+
+  // 2. Create account
+  btn.textContent = 'CREATING...';
+  const { data, error: signupErr } = await supa.auth.signUp({ email, password: pass });
+
+  if (signupErr) {
+    err.textContent = '✕ ' + signupErr.message;
+    btn.disabled = false;
+    btn.textContent = 'CREATE ACCOUNT';
+  } else if (data.user && data.user.identities && data.user.identities.length === 0) {
+    err.textContent = '✕ Account already exists. Use Sign In tab.';
+    btn.disabled = false;
+    btn.textContent = 'CREATE ACCOUNT';
+  } else {
+    // Auto login after signup
+    const { data: loginData, error: loginErr } = await supa.auth.signInWithPassword({ email, password: pass });
+    if (loginData?.user) {
+      onLoginSuccess(loginData.user);
+    } else {
+      err.style.color = 'var(--g)';
+      err.textContent = '✓ Account created! Please sign in.';
+      switchLoginTab('login');
+      document.getElementById('loginEmail').value = email;
+      btn.disabled = false;
+      btn.textContent = 'CREATE ACCOUNT';
+    }
+  }
+}
+
 // Enter key on login
 document.addEventListener('DOMContentLoaded', () => {
   ['loginEmail','loginPass'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  });
+  ['signupEmail','signupPass','signupPass2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
   });
 });
 
