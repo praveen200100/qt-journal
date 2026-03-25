@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QT Journal - Quantum Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --black-card: #151515;
+            --black-hover: #1a1a1a;
+            --gold: #d4af37;
+            --gold-light: #f4d66f;
+            --gold-dark: #b8941f;
+            --white: #ffffff;
+            --text-primary: #e8e8e8;
+            --text-secondary: #a8a8a8;
+            --profit: #10b981;
+            --loss: #ef4444;
+            --breakeven: #6b7280;
+            --border: rgba(212, 175, 55, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background: var(--black);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Grain Texture Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+        }
+
+        .login-brand {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .login-brand h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .login-brand p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .login-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .login-right::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(212, 175, 55, 0.03) 100%);
+        }
+
+        .login-form-wrapper {
+            background: rgba(21, 21, 21, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-tab {
+            flex: 1;
+            padding: 0.875rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-tab.active {
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+            border-color: var(--gold);
+            color: var(--black);
+        }
+
+        .form-tab:hover:not(.active) {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1.125rem;
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--black);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard.active {
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(21, 21, 21, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-brand h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-brand p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 1rem;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu .icon {
+            font-size: 1.2rem;
+        }
+
+        .sidebar-footer {
+            padding: 0 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+        }
+
+        .account-info {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .account-name {
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .account-balance {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            width: calc(100% - 280px);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .top-bar-left h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .top-bar-left p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-icon {
+            padding: 0.875rem 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-icon:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .btn-add-trade {
+            padding: 0.875rem 1.75rem;
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--black);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .btn-add-trade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Stats Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(21, 21, 21, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-value.positive {
+            color: var(--profit);
+        }
+
+        .stat-value.negative {
+            color: var(--loss);
+        }
+
+        .stat-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Performance Card */
+        .performance-card {
+            background: rgba(21, 21, 21, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .performance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .performance-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .performance-metric {
+            text-align: center;
+        }
+
+        .performance-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .performance-metric-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        /* Trading History Table */
+        .table-container {
+            background: rgba(21, 21, 21, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        thead {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            border-bottom: 1px solid var(--border);
+        }
+
+        th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.05);
+        }
+
+        tbody tr:hover {
+            background: rgba(212, 175, 55, 0.03);
+        }
+
+        td {
+            padding: 1.25rem 1.5rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .symbol-cell {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 1rem;
+        }
+
+        .date-cell {
+            font-family: 'Jost', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-badge.buy {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--profit);
+        }
+
+        .type-badge.sell {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--loss);
+        }
+
+        .profit-cell {
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .profit-cell.positive {
+            color: var(--profit);
+        }
+
+        .profit-cell.negative {
+            color: var(--loss);
+        }
+
+        .share-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(21, 21, 21, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--gold);
+            transform: rotate(90deg);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--black);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-left,
+            .login-right {
+                flex: none;
+                width: 100%;
+            }
+
+            .login-brand h1 {
+                font-size: 3rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .top-bar-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th,
+            td {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .stat-card {
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        tbody tr {
+            animation: slideInLeft 0.4s ease backwards;
+        }
+
+        tbody tr:nth-child(1) { animation-delay: 0.05s; }
+        tbody tr:nth-child(2) { animation-delay: 0.1s; }
+        tbody tr:nth-child(3) { animation-delay: 0.15s; }
+        tbody tr:nth-child(4) { animation-delay: 0.2s; }
+        tbody tr:nth-child(5) { animation-delay: 0.25s; }
+
+        /* Hide default elements initially */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-left">
+            <div class="login-brand">
+                <h1>QT</h1>
+                <p>Quantum Trading Journal</p>
+            </div>
+        </div>
+        <div class="login-right">
+            <div class="login-form-wrapper">
+                <div class="form-tabs">
+                    <button class="form-tab active" onclick="switchTab('signin')">Sign In</button>
+                    <button class="form-tab" onclick="switchTab('signup')">Create Account</button>
+                </div>
+
+                <!-- Sign In Form -->
+                <form id="signinForm" class="form-section active">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="signinEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signinPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Enter War Room</button>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signupForm" class="form-section">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="min 6 characters" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2>QT</h2>
+                <p>Quantum Trading</p>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" class="active">
+                        <span class="icon">📊</span>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">📈</span>
+                        <span>Statistics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">📅</span>
+                        <span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">📜</span>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">💱</span>
+                        <span>Forex</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">📉</span>
+                        <span>Futures</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">🇮🇳</span>
+                        <span>India</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="account-info">
+                    <div class="account-name">WAR ROOM</div>
+                    <div class="account-balance">₹0.00</div>
+                </div>
+                <button class="btn-icon" style="width: 100%;" onclick="logout()">
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <h1>War Room Dashboard</h1>
+                    <p>Track, Analyze, and Optimize Your Trading Performance</p>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="btn-icon" title="Backup">💾 Backup</button>
+                    <button class="btn-icon" title="Import">📂 Import</button>
+                    <button class="btn-icon" title="Export CSV">⬇ CSV</button>
+                    <button class="btn-icon" title="Google Drive">☁ Drive</button>
+                    <button class="btn-add-trade" onclick="openAddTradeModal()">+ Add Trade</button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-label">Net P&L</span>
+                        <span class="stat-icon">💰</span>
+                    </div>
+                    <div class="stat-value" id="netPnl">₹0.00</div>
+                    <div class="stat-subtitle">All Time</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-label">Win Rate</span>
+                        <span class="stat-icon">🎯</span>
+                    </div>
+                    <div class="stat-value" id="winRate">0%</div>
+                    <div class="stat-subtitle">Success Ratio</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-label">Total Trades</span>
+                        <span class="stat-icon">📊</span>
+                    </div>
+                    <div class="stat-value" id="totalTrades">0</div>
+                    <div class="stat-subtitle"><span id="wins">0</span> W / <span id="losses">0</span> L</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-label">Profit Factor</span>
+                        <span class="stat-icon">⚡</span>
+                    </div>
+                    <div class="stat-value" id="profitFactor">—</div>
+                    <div class="stat-subtitle">Risk to Reward</div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="performance-card">
+                <div class="performance-header">
+                    <h3>Performance Metrics</h3>
+                </div>
+                <div class="performance-metrics">
+                    <div class="performance-metric">
+                        <div class="performance-metric-value" id="avgRR">—</div>
+                        <div class="performance-metric-label">Avg R:R</div>
+                    </div>
+                    <div class="performance-metric">
+                        <div class="performance-metric-value positive" id="grossProfit">₹0.00</div>
+                        <div class="performance-metric-label">Gross Profit</div>
+                    </div>
+                    <div class="performance-metric">
+                        <div class="performance-metric-value negative" id="grossLoss">₹0.00</div>
+                        <div class="performance-metric-label">Gross Loss</div>
+                    </div>
+                    <div class="performance-metric">
+                        <div class="performance-metric-value" id="performanceScore">0</div>
+                        <div class="performance-metric-label">Performance Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading History Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Trading History</h3>
+                    <div class="table-filters">
+                        <button class="filter-btn active">All</button>
+                        <button class="filter-btn">Wins</button>
+                        <button class="filter-btn">Losses</button>
+                        <button class="filter-btn">Today</button>
+                    </div>
+                </div>
+
+                <div id="tradesTableContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📈</div>
+                        <h4>No Trades Yet</h4>
+                        <p>Add your first trade to start tracking your performance</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Trade Modal -->
+    <div class="modal" id="addTradeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Trade</h3>
+                <button class="close-modal" onclick="closeAddTradeModal()">×</button>
+            </div>
+
+            <form id="addTradeForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="tradeDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Session</label>
+                        <input type="text" id="tradeSession" placeholder="e.g., London, New York">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Symbol</label>
+                        <input type="text" id="tradeSymbol" placeholder="e.g., EURUSD, BANKNIFTY" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Direction</label>
+                        <select id="tradeDirection" required>
+                            <option value="">Select...</option>
+                            <option value="BUY">BUY / LONG</option>
+                            <option value="SELL">SELL / SHORT</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Timeframe</label>
+                        <select id="tradeTimeframe">
+                            <option value="1m">1 Minute</option>
+                            <option value="3m">3 Minutes</option>
+                            <option value="5m">5 Minutes</option>
+                            <option value="15m">15 Minutes</option>
+                            <option value="30m">30 Minutes</option>
+                            <option value="1h">1 Hour</option>
+                            <option value="4h">4 Hours</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Entry Price</label>
+                        <input type="number" id="entryPrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stop Loss</label>
+                        <input type="number" id="stopLoss" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target / TP</label>
+                        <input type="number" id="target" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Exit Price</label>
+                        <input type="number" id="exitPrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lot Size</label>
+                        <input type="number" id="lotSize" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Commission</label>
+                        <input type="number" id="commission" step="0.01" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Outcome</label>
+                        <select id="outcome" required>
+                            <option value="">Select...</option>
+                            <option value="Win">Win</option>
+                            <option value="Loss">Loss</option>
+                            <option value="Breakeven">Breakeven</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Emotion</label>
+                        <select id="emotion">
+                            <option value="Calm">Calm</option>
+                            <option value="FOMO">FOMO</option>
+                            <option value="Revenge">Revenge</option>
+                            <option value="Confident">Confident</option>
+                            <option value="Patient">Patient</option>
+                            <option value="Hesitant">Hesitant</option>
+                            <option value="Greedy">Greedy</option>
+                            <option value="Fearful">Fearful</option>
+                            <option value="Disciplined">Disciplined</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Open Date/Time</label>
+                        <input type="datetime-local" id="openDateTime">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Close Date/Time</label>
+                        <input type="datetime-local" id="closeDateTime">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Notes / Analysis</label>
+                        <textarea id="notes" placeholder="What went well? What could be improved?"></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Mistakes</label>
+                        <textarea id="mistakes" placeholder="Document any mistakes or lessons learned"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeAddTradeModal()">Cancel</button>
+                    <button type="submit" class="btn-save">Save Trade</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample data storage
+        let trades = [];
+        let currentUser = null;
+
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.form-tab');
+            const forms = document.querySelectorAll('.form-section');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'signin') {
+                tabs[0].classList.add('active');
+                document.getElementById('signinForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        // Login
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add your authentication logic here
+            currentUser = document.getElementById('signinEmail').value;
+            showDashboard();
+        });
+
+        // Signup
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Add your registration logic here
+            currentUser = document.getElementById('signupEmail').value;
+            showDashboard();
+        });
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            loadTrades();
+        }
+
+        function logout() {
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('loginScreen').style.display = 'flex';
+            currentUser = null;
+        }
+
+        // Modal functions
+        function openAddTradeModal() {
+            document.getElementById('addTradeModal').classList.add('active');
+            // Set today's date by default
+            document.getElementById('tradeDate').valueAsDate = new Date();
+        }
+
+        function closeAddTradeModal() {
+            document.getElementById('addTradeModal').classList.remove('active');
+            document.getElementById('addTradeForm').reset();
+        }
+
+        // Add trade
+        document.getElementById('addTradeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const trade = {
+                id: Date.now(),
+                date: document.getElementById('tradeDate').value,
+                session: document.getElementById('tradeSession').value,
+                symbol: document.getElementById('tradeSymbol').value,
+                direction: document.getElementById('tradeDirection').value,
+                timeframe: document.getElementById('tradeTimeframe').value,
+                entryPrice: parseFloat(document.getElementById('entryPrice').value),
+                stopLoss: parseFloat(document.getElementById('stopLoss').value) || 0,
+                target: parseFloat(document.getElementById('target').value) || 0,
+                exitPrice: parseFloat(document.getElementById('exitPrice').value),
+                lotSize: parseFloat(document.getElementById('lotSize').value),
+                commission: parseFloat(document.getElementById('commission').value) || 0,
+                outcome: document.getElementById('outcome').value,
+                emotion: document.getElementById('emotion').value,
+                openDateTime: document.getElementById('openDateTime').value,
+                closeDateTime: document.getElementById('closeDateTime').value,
+                notes: document.getElementById('notes').value,
+                mistakes: document.getElementById('mistakes').value
+            };
+
+            // Calculate P&L
+            const priceDiff = trade.direction === 'BUY' 
+                ? (trade.exitPrice - trade.entryPrice) 
+                : (trade.entryPrice - trade.exitPrice);
+            trade.pnl = (priceDiff * trade.lotSize) - trade.commission;
+
+            // Calculate R:R
+            if (trade.stopLoss && trade.target) {
+                const risk = Math.abs(trade.entryPrice - trade.stopLoss);
+                const reward = Math.abs(trade.target - trade.entryPrice);
+                trade.rr = (reward / risk).toFixed(2);
+            } else {
+                trade.rr = '—';
+            }
+
+            trades.push(trade);
+            saveTrades();
+            closeAddTradeModal();
+            loadTrades();
+        });
+
+        // Save trades to localStorage
+        function saveTrades() {
+            localStorage.setItem('trades', JSON.stringify(trades));
+        }
+
+        // Load trades from localStorage
+        function loadTrades() {
+            const saved = localStorage.getItem('trades');
+            if (saved) {
+                trades = JSON.parse(saved);
+            }
+            updateDashboard();
+            renderTradesTable();
+        }
+
+        // Update dashboard stats
+        function updateDashboard() {
+            const totalTrades = trades.length;
+            const wins = trades.filter(t => t.outcome === 'Win').length;
+            const losses = trades.filter(t => t.outcome === 'Loss').length;
+            const winRate = totalTrades > 0 ? ((wins / totalTrades) * 100).toFixed(1) : 0;
+            
+            const totalPnl = trades.reduce((sum, t) => sum + t.pnl, 0);
+            const grossProfit = trades.filter(t => t.pnl > 0).reduce((sum, t) => sum + t.pnl, 0);
+            const grossLoss = Math.abs(trades.filter(t => t.pnl < 0).reduce((sum, t) => sum + t.pnl, 0));
+            const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : '—';
+
+            // Calculate average R:R
+            const validRRs = trades.filter(t => t.rr !== '—').map(t => parseFloat(t.rr));
+            const avgRR = validRRs.length > 0 
+                ? (validRRs.reduce((a, b) => a + b, 0) / validRRs.length).toFixed(2) 
+                : '—';
+
+            // Update DOM
+            document.getElementById('netPnl').textContent = `₹${totalPnl.toFixed(2)}`;
+            document.getElementById('netPnl').className = 'stat-value ' + (totalPnl >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('winRate').textContent = `${winRate}%`;
+            document.getElementById('totalTrades').textContent = totalTrades;
+            document.getElementById('wins').textContent = wins;
+            document.getElementById('losses').textContent = losses;
+            document.getElementById('profitFactor').textContent = profitFactor;
+            document.getElementById('avgRR').textContent = avgRR;
+            document.getElementById('grossProfit').textContent = `₹${grossProfit.toFixed(2)}`;
+            document.getElementById('grossLoss').textContent = `₹${grossLoss.toFixed(2)}`;
+            
+            // Calculate performance score (0-100)
+            const score = Math.min(100, Math.round(
+                (winRate * 0.4) + 
+                (Math.min(profitFactor * 10, 50)) + 
+                (totalTrades > 0 ? 10 : 0)
+            ));
+            document.getElementById('performanceScore').textContent = score;
+        }
+
+        // Render trades table
+        function renderTradesTable() {
+            const container = document.getElementById('tradesTableContainer');
+            
+            if (trades.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📈</div>
+                        <h4>No Trades Yet</h4>
+                        <p>Add your first trade to start tracking your performance</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Share</th>
+                            <th>Symbol</th>
+                            <th>Type</th>
+                            <th>Open Date</th>
+                            <th>Open</th>
+                            <th>Close Date</th>
+                            <th>Close</th>
+                            <th>TP</th>
+                            <th>SL</th>
+                            <th>Lots</th>
+                            <th>Commission</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${trades.map(trade => `
+                            <tr>
+                                <td><button class="share-btn">📤</button></td>
+                                <td class="symbol-cell">${trade.symbol}</td>
+                                <td><span class="type-badge ${trade.direction.toLowerCase()}">${trade.direction}</span></td>
+                                <td class="date-cell">${formatDate(trade.date)}</td>
+                                <td>₹${trade.entryPrice.toFixed(2)}</td>
+                                <td class="date-cell">${formatDate(trade.date)}</td>
+                                <td>₹${trade.exitPrice.toFixed(2)}</td>
+                                <td>${trade.target ? '₹' + trade.target.toFixed(2) : '—'}</td>
+                                <td>${trade.stopLoss ? '₹' + trade.stopLoss.toFixed(2) : '—'}</td>
+                                <td>${trade.lotSize}</td>
+                                <td>₹${trade.commission.toFixed(2)}</td>
+                                <td class="profit-cell ${trade.pnl >= 0 ? 'positive' : 'negative'}">
+                                    ${trade.pnl >= 0 ? '+' : ''}₹${trade.pnl.toFixed(2)}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric' 
+            });
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Add filter logic here
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('addTradeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddTradeModal();
+            }
+        });
+
+        // Initialize
+        loadTrades();
+    </script>
+</body>
+</html>
